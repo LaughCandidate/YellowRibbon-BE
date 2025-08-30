@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import laughcandidate.yellowribbonbe.auth.dto.request.PhoneCheckRequest;
+import laughcandidate.yellowribbonbe.auth.dto.request.PhoneVerificationRequest;
+import laughcandidate.yellowribbonbe.auth.dto.response.PhoneVerificationResultResponse;
 import laughcandidate.yellowribbonbe.auth.service.AuthService;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +32,16 @@ public class AuthController {
 		authService.checkPhoneDuplicate(phoneCheckRequest.phone());
 
 		return ResponseEntity.ok(ApiResponse.noContent());
+	}
+
+	@PostMapping("/send-code")
+	@Operation(
+		summary = "인증번호 요청 API",
+		description = "인증번호 요청")
+	public ResponseEntity<ApiResponse<PhoneVerificationResultResponse>> sendVerificationCode(@RequestBody @Valid PhoneVerificationRequest phoneVerificationRequest) {
+		PhoneVerificationResultResponse phoneVerificationResultResponse = authService.sendVerificationCode(
+			phoneVerificationRequest.phone());
+
+		return ResponseEntity.ok(ApiResponse.created(phoneVerificationResultResponse));
 	}
 }

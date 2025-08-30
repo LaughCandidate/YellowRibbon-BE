@@ -34,7 +34,8 @@ public class SecurityConfig {
 		"/webjars/**",
 		"/actuator/**",
 		"/auth/login",
-		"/auth/check-phone"
+		"/auth/check-phone",
+		"/auth/send-code"
 	};
 
 	private static final String[] BLACKLIST = {
