@@ -9,4 +9,6 @@ import laughcandidate.yellowribbonbe.user.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
 	Optional<User> findByPhoneAndIsDeletedFalse(String loginId);
+
+	boolean existsByPhone(String phone);
 }
