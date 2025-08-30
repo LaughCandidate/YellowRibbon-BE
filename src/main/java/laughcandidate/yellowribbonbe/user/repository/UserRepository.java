@@ -8,5 +8,5 @@ import laughcandidate.yellowribbonbe.user.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	Optional<User> findByLoginIdAndIsDeletedFalse(String loginId);
+	Optional<User> findByPhoneAndIsDeletedFalse(String loginId);
 }
