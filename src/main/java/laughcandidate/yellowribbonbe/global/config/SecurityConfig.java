@@ -33,7 +33,8 @@ public class SecurityConfig {
 		"/swagger-resources/**",
 		"/webjars/**",
 		"/actuator/**",
-		"/auth/login"
+		"/auth/login",
+		"/auth/check-phone"
 	};
 
 	private static final String[] BLACKLIST = {
