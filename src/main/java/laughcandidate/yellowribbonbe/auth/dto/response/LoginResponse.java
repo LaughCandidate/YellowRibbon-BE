@@ -1,4 +1,4 @@
-package laughcandidate.yellowribbonbe.auth.dto;
+package laughcandidate.yellowribbonbe.auth.dto.response;
 
 import lombok.Builder;
 

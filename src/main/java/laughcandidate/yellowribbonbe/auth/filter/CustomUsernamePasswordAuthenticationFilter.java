@@ -17,8 +17,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import laughcandidate.yellowribbonbe.auth.jwt.dto.UserTokenResponse;
 import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
-import laughcandidate.yellowribbonbe.auth.dto.LoginRequest;
-import laughcandidate.yellowribbonbe.auth.dto.LoginResponse;
+import laughcandidate.yellowribbonbe.auth.dto.request.LoginRequest;
+import laughcandidate.yellowribbonbe.auth.dto.response.LoginResponse;
 import laughcandidate.yellowribbonbe.auth.util.ResponseUtil;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.AuthErrorCode;
