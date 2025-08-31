@@ -44,4 +44,14 @@ public class AuthController {
 
 		return ResponseEntity.ok(ApiResponse.created(phoneVerificationResultResponse));
 	}
+
+	@PostMapping("/verify-code")
+	@Operation(
+		summary = "인증번호 검증 API",
+		description = "인증번호 검증")
+	public ResponseEntity<ApiResponse<Void>> verify(@RequestBody @Valid PhoneVerificationRequest phoneVerificationRequest) {
+		authService.verifyCode(phoneVerificationRequest.phone());
+
+		return ResponseEntity.ok(ApiResponse.noContent());
+	}
 }

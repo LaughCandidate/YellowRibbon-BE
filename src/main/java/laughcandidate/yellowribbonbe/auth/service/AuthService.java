@@ -1,10 +1,14 @@
 package laughcandidate.yellowribbonbe.auth.service;
 
+import static laughcandidate.yellowribbonbe.auth.constants.EmailVerificationConstant.*;
+
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import laughcandidate.yellowribbonbe.auth.dto.response.PhoneVerificationResultResponse;
 import laughcandidate.yellowribbonbe.auth.util.GeneratorRandomUtil;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
@@ -28,12 +32,37 @@ public class AuthService {
 		}
 	}
 
+	@Transactional
 	public PhoneVerificationResultResponse sendVerificationCode(String phone) {
 		String code = GeneratorRandomUtil.generateRandomNum();
+		LocalDateTime now = LocalDateTime.now();
 
-		redisTemplate.opsForValue().set(phone, code, Duration.ofMinutes(5));
+		redisTemplate.opsForValue().set(PREFIX_VERIFICATION_CODE + phone, code, Duration.ofMinutes(VERIFICATION_TIME));
+		redisTemplate.opsForValue().set(PREFIX_VERIFICATION_TIME + phone, now.toString(), Duration.ofMinutes(VERIFICATION_TIME));
 		String emailAddress = emailService.getServerEmail();
 
 		return new PhoneVerificationResultResponse(code,emailAddress);
+	}
+
+	@Transactional
+	public void verifyCode(String phone) {
+		String code = redisTemplate.opsForValue().get(PREFIX_VERIFICATION_CODE + phone);
+		String time = redisTemplate.opsForValue().get(PREFIX_VERIFICATION_TIME + phone);
+		
+		if(code == null || time == null) {
+			throw new CustomException(AuthErrorCode.INVALID_VERIFICATION_CODE);
+		}
+
+		LocalDateTime createdAt = LocalDateTime.parse(time);
+		boolean result = emailService.extractCodeByPhoneNumber(code, phone, createdAt);
+
+		if (!result) {
+			throw new CustomException(AuthErrorCode.INVALID_VERIFICATION_CODE);
+		}
+
+		redisTemplate.delete(PREFIX_VERIFICATION_CODE + phone);
+		redisTemplate.delete(PREFIX_VERIFICATION_TIME + phone);
+
+		redisTemplate.opsForValue().set(phone, VERIFIED, Duration.ofMinutes(VERIFICATION_TIME));
 	}
 }

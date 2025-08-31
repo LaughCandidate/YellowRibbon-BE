@@ -35,7 +35,8 @@ public class SecurityConfig {
 		"/actuator/**",
 		"/auth/login",
 		"/auth/check-phone",
-		"/auth/send-code"
+		"/auth/send-code",
+		"/auth/verify-code"
 	};
 
 	private static final String[] BLACKLIST = {
