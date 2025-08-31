@@ -46,3 +46,7 @@ security:
   jwt:
     token:
       secret-key: testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest
+
+open-api:
+  url: test
+  key: test
