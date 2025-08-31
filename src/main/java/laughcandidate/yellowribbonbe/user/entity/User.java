@@ -52,4 +52,8 @@ public class User extends BaseEntity {
 		this.uid = uid;
 		this.role = role;
 	}
+
+	public void updateRole() {
+		this.role = Role.USER;
+	}
 }
