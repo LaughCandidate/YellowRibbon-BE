@@ -11,7 +11,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import laughcandidate.yellowribbonbe.auth.dto.request.PhoneCheckRequest;
 import laughcandidate.yellowribbonbe.auth.dto.request.PhoneVerificationRequest;
+import laughcandidate.yellowribbonbe.auth.dto.request.RegisterRequest;
 import laughcandidate.yellowribbonbe.auth.dto.response.PhoneVerificationResultResponse;
+import laughcandidate.yellowribbonbe.auth.dto.response.RegisterResponse;
 import laughcandidate.yellowribbonbe.auth.service.AuthService;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -53,5 +55,16 @@ public class AuthController {
 		authService.verifyCode(phoneVerificationRequest.phone());
 
 		return ResponseEntity.ok(ApiResponse.noContent());
+	}
+
+	@PostMapping("/register")
+	@Operation(
+		summary = "회원가입 API",
+		description = "회원가입")
+	public ResponseEntity<ApiResponse<RegisterResponse>> register(@RequestBody @Valid RegisterRequest registerRequest) {
+		RegisterResponse register = authService.register(registerRequest.name(), registerRequest.phone(),
+			registerRequest.password());
+
+		return ResponseEntity.ok(ApiResponse.ok(register));
 	}
 }
