@@ -30,8 +30,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import laughcandidate.yellowribbonbe.auth.util.ResponseUtil;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.AuthErrorCode;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.servlet.http.HttpServletResponse;
+import laughcandidate.yellowribbonbe.user.entity.Role;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -49,8 +52,16 @@ public class TokenProvider {
 
 	public UserTokenResponse createLoginToken(final String uid, final Long userId, final String role) {
 
-		String accessToken = createAccessToken(uid, role);
-		String refreshToken = createRefreshToken(uid, role);
+		String accessToken;
+		String refreshToken;
+
+		if (role.equals(Role.TEMP_USER.getRole())) {
+			accessToken = createAccessToken(uid, role, TEMP_ACCESS_TOKEN_EXPIRATION_MINUTE * MINUTE_IN_MILLISECONDS);
+			refreshToken = createRefreshToken(uid, role, TEMP_REFRESH_TOKEN_EXPIRATION_DAYS * DAYS_IN_MILLISECONDS);
+		} else {
+			accessToken = createAccessToken(uid, role, ACCESS_TOKEN_EXPIRATION_MINUTE * MINUTE_IN_MILLISECONDS);
+			refreshToken = createRefreshToken(uid, role, REFRESH_TOKEN_EXPIRATION_DAYS * DAYS_IN_MILLISECONDS);
+		}
 
 		saveRefreshToken(uid, refreshToken);
 		saveUserId(uid, userId);
@@ -61,12 +72,12 @@ public class TokenProvider {
 		);
 	}
 
-	public String createAccessToken(final String uid, final String role) {
-		return createToken(uid, role, ACCESS_TOKEN_EXPIRATION_MINUTE * MINUTE_IN_MILLISECONDS);
+	public String createAccessToken(final String uid, final String role, final long expiredTime) {
+		return createToken(uid, role, expiredTime);
 	}
 
-	public String createRefreshToken(final String uid, final String role) {
-		return createToken(uid, role, REFRESH_TOKEN_EXPIRATION_DAYS * DAYS_IN_MILLISECONDS);
+	public String createRefreshToken(final String uid, final String role, final long expiredTime) {
+		return createToken(uid, role, expiredTime);
 	}
 
 	public String resolveAccessToken(HttpServletRequest request) {
@@ -99,11 +110,12 @@ public class TokenProvider {
 		return false;
 	}
 
-	public Authentication getAuthenticationByAccessToken(String accessToken, HttpServletResponse response, ObjectMapper objectMapper) throws java.io.IOException {
+	public Authentication getAuthenticationByAccessToken(String accessToken, HttpServletResponse response,
+		ObjectMapper objectMapper) throws java.io.IOException {
 		Claims claims = getClaimsFromToken(accessToken);
 		String uid = claims.getSubject();
 		String role = claims.get("role", String.class);
-		
+
 		try {
 			Long userId = getUserId(uid);
 			CustomUserDetails customUserDetails = CustomUserDetails.fromClaims(uid, userId, role);
