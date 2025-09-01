@@ -12,8 +12,10 @@ import jakarta.validation.Valid;
 import laughcandidate.yellowribbonbe.auth.dto.request.PhoneCheckRequest;
 import laughcandidate.yellowribbonbe.auth.dto.request.PhoneVerificationRequest;
 import laughcandidate.yellowribbonbe.auth.dto.request.RegisterRequest;
+import laughcandidate.yellowribbonbe.auth.dto.request.ReissueTokenRequest;
 import laughcandidate.yellowribbonbe.auth.dto.response.PhoneVerificationResultResponse;
 import laughcandidate.yellowribbonbe.auth.dto.response.RegisterResponse;
+import laughcandidate.yellowribbonbe.auth.dto.response.ReissueTokenResponse;
 import laughcandidate.yellowribbonbe.auth.service.AuthService;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -66,5 +68,14 @@ public class AuthController {
 			registerRequest.password());
 
 		return ResponseEntity.ok(ApiResponse.ok(register));
+	}
+
+	@PostMapping("/reissue")
+	@Operation(
+		summary = "토큰 재발급 API",
+		description = "리프레시 토큰으로 새로운 액세스 토큰 발급")
+	public ApiResponse<ReissueTokenResponse> reissue(@RequestBody ReissueTokenRequest request) {
+		ReissueTokenResponse reissueTokenResponse = authService.reissue(request.refreshToken());
+		return ApiResponse.ok(reissueTokenResponse);
 	}
 }
