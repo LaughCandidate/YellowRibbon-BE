@@ -1,7 +1,10 @@
 package laughcandidate.yellowribbonbe.business.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +16,8 @@ import jakarta.validation.Valid;
 import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
 import laughcandidate.yellowribbonbe.business.dto.request.ConnectOptionalRequest;
 import laughcandidate.yellowribbonbe.business.dto.request.ConnectRequiredRequest;
+import laughcandidate.yellowribbonbe.business.dto.response.BusinessInfoResponse;
+import laughcandidate.yellowribbonbe.business.dto.response.BusinessInfoListResponse;
 import laughcandidate.yellowribbonbe.business.dto.response.ConnectResponse;
 import laughcandidate.yellowribbonbe.business.service.BusinessService;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
@@ -54,5 +59,16 @@ public class BusinessController {
 		businessService.connectBusinessOptional(connectOptionalRequest.businessNo(), connectOptionalRequest.ownerName(),
 			connectOptionalRequest.startDate(), connectOptionalRequest.businessName(), customUserDetails.getUserId());
 		return ResponseEntity.ok(ApiResponse.noContent());
+	}
+
+	@GetMapping("/info")
+	@Operation(
+		summary = "내 사업자 조회 API",
+		description = "현재 사용자의 사업자 목록 조회")
+	public ResponseEntity<ApiResponse<BusinessInfoListResponse>> getBusinessesInfo(
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		BusinessInfoListResponse businessesInfo = businessService.getBusinessesInfo(customUserDetails.getUserId());
+		return ResponseEntity.ok(ApiResponse.ok(businessesInfo));
 	}
 }
