@@ -23,6 +23,7 @@ public enum AuthErrorCode implements ErrorCode {
 
 	// 404
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "A-006", "회원을 찾을 수 없습니다."),
+	REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "A-008", "리프레시 토큰을 찾을 수 없습니다."),
 
 	// 409
 	PHONE_DUPLICATED(HttpStatus.CONFLICT, "A-007", "이미 존재하는 전화번호입니다."),
