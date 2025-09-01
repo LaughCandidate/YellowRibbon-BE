@@ -25,7 +25,10 @@ public class User extends BaseEntity {
 	@Column(name = "user_id")
 	private Long id;
 
-	@Column(name = "password")
+	@Column(name = "id", unique = true)
+	private String loginId;
+
+	@Column(name = "password", unique = true)
 	private String password;
 
 	@Column(name = "uid", unique = true)
@@ -45,8 +48,9 @@ public class User extends BaseEntity {
 	private boolean isDeleted = false;
 
 	@Builder
-	public User(String name, String password, String phone, String uid, Role role) {
+	public User(String name, String loginId, String password, String phone, String uid, Role role) {
 		this.name = name;
+		this.loginId = loginId;
 		this.password = password;
 		this.phone = phone;
 		this.uid = uid;
