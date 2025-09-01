@@ -2,16 +2,19 @@ package laughcandidate.yellowribbonbe.business.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import laughcandidate.yellowribbonbe.auth.jwt.TokenProvider;
 import laughcandidate.yellowribbonbe.auth.jwt.dto.UserTokenResponse;
 import laughcandidate.yellowribbonbe.business.dto.BusinessInfo;
 import laughcandidate.yellowribbonbe.business.dto.request.BusinessValidationRequest;
 import laughcandidate.yellowribbonbe.business.dto.response.BusinessValidationResponse;
+import laughcandidate.yellowribbonbe.business.dto.response.BusinessInfoResponse;
+import laughcandidate.yellowribbonbe.business.dto.response.BusinessInfoListResponse;
 import laughcandidate.yellowribbonbe.business.dto.response.ConnectResponse;
 import laughcandidate.yellowribbonbe.business.entity.Business;
 import laughcandidate.yellowribbonbe.business.repository.BusinessRepository;
@@ -66,6 +69,24 @@ public class BusinessService {
 		LocalDate parsedStartDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyyMMdd"));
 
 		saveBusiness(businessNo, businessName, ownerName, parsedStartDate, user);
+	}
+
+	@Transactional(readOnly = true)
+	public BusinessInfoListResponse getBusinessesInfo(Long userId) {
+		List<Business> businesses = businessRepository.findByUserId(userId);
+		List<BusinessInfoResponse> responses = new ArrayList<>();
+		
+		for (Business business : businesses) {
+			responses.add(new BusinessInfoResponse(
+				business.getId(),
+				business.getBusinessNo(),
+				business.getOwnerName(),
+				business.getStartDate(),
+				business.getBusinessName()
+			));
+		}
+		
+		return new BusinessInfoListResponse(responses);
 	}
 
 	@Transactional
