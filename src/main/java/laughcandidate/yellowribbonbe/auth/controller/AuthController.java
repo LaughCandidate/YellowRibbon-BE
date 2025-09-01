@@ -42,7 +42,8 @@ public class AuthController {
 	@Operation(
 		summary = "인증번호 요청 API",
 		description = "인증번호 요청")
-	public ResponseEntity<ApiResponse<PhoneVerificationResultResponse>> sendVerificationCode(@RequestBody @Valid PhoneVerificationRequest phoneVerificationRequest) {
+	public ResponseEntity<ApiResponse<PhoneVerificationResultResponse>> sendVerificationCode(
+		@RequestBody @Valid PhoneVerificationRequest phoneVerificationRequest) {
 		PhoneVerificationResultResponse phoneVerificationResultResponse = authService.sendVerificationCode(
 			phoneVerificationRequest.phone());
 
@@ -53,7 +54,8 @@ public class AuthController {
 	@Operation(
 		summary = "인증번호 검증 API",
 		description = "인증번호 검증")
-	public ResponseEntity<ApiResponse<Void>> verify(@RequestBody @Valid PhoneVerificationRequest phoneVerificationRequest) {
+	public ResponseEntity<ApiResponse<Void>> verify(
+		@RequestBody @Valid PhoneVerificationRequest phoneVerificationRequest) {
 		authService.verifyCode(phoneVerificationRequest.phone());
 
 		return ResponseEntity.ok(ApiResponse.noContent());
@@ -65,7 +67,7 @@ public class AuthController {
 		description = "회원가입")
 	public ResponseEntity<ApiResponse<RegisterResponse>> register(@RequestBody @Valid RegisterRequest registerRequest) {
 		RegisterResponse register = authService.register(registerRequest.name(), registerRequest.phone(),
-			registerRequest.password());
+			registerRequest.id(), registerRequest.password());
 
 		return ResponseEntity.ok(ApiResponse.ok(register));
 	}

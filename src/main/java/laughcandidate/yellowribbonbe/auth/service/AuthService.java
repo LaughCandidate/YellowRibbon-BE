@@ -78,7 +78,7 @@ public class AuthService {
 		redisTemplate.opsForValue().set(phone, VERIFIED, Duration.ofMinutes(VERIFICATION_TIME));
 	}
 
-	public RegisterResponse register(String name, String phone, String password) {
+	public RegisterResponse register(String name, String phone, String id, String password) {
 		String isVerified = redisTemplate.opsForValue().get(phone);
 
 		if (isVerified == null || !isVerified.equals(VERIFIED)) {
@@ -90,6 +90,7 @@ public class AuthService {
 		User user = User.builder()
 			.name(name)
 			.phone(phone)
+			.loginId(id)
 			.password(passwordEncoder.encode(password))
 			.role(Role.TEMP_USER)
 			.uid(uid)
