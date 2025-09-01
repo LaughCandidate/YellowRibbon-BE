@@ -1,5 +1,7 @@
 package laughcandidate.yellowribbonbe.auth.filter;
 
+import static laughcandidate.yellowribbonbe.global.constants.TokenConstant.*;
+
 import java.io.IOException;
 
 import org.springframework.http.HttpMethod;
@@ -45,8 +47,8 @@ public class CustomLogoutFilter extends GenericFilterBean {
         Claims claimsByAccessToken = tokenProvider.getClaimsFromToken(accessToken);
         String uid = claimsByAccessToken.getSubject();
 
-        tokenProvider.deleteRefreshToken(uid);
-        tokenProvider.deleteUserId(uid);
+        tokenProvider.deleteRefreshToken(REFRESH_TOKEN_PREFIX + uid);
+        tokenProvider.deleteUserId(USER_ID_PREFIX + uid);
 
         ResponseUtil.writeNoContent(
                 response,
