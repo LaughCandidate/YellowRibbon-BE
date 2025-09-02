@@ -7,6 +7,7 @@ plugins {
 ext {
     queryDslVersion = "5.1.0"
     springCloudVersion = "2025.0.0"
+    springAiVersion = "1.0.1"
 }
 
 group = 'LaughCandidate'
@@ -87,10 +88,14 @@ dependencies {
 
     // mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // AI
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai'
 }
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+        mavenBom "org.springframework.ai:spring-ai-bom:$springAiVersion"
     }
 }
 
