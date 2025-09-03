@@ -3,7 +3,7 @@ package laughcandidate.yellowribbonbe.business.util;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import laughcandidate.yellowribbonbe.business.client.BusinessValidationClient;
+import laughcandidate.yellowribbonbe.ai.api.BusinessValidationClient;
 import laughcandidate.yellowribbonbe.business.dto.request.BusinessValidationRequest;
 import laughcandidate.yellowribbonbe.business.dto.response.BusinessValidationResponse;
 import lombok.RequiredArgsConstructor;
