@@ -1,8 +1,5 @@
 package laughcandidate.yellowribbonbe.mission.service;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,13 +18,8 @@ public class MissionService {
 
 	private final OpenAIUtil openAIUtil;
 	private final MissionRepository missionRepository;
-	
-	private static final long MAX_FILE_SIZE = 10 * 1024 * 1024L; // 10MB
-	private static final List<String> ALLOWED_TYPES = Arrays.asList("image/jpeg", "image/png", "image/jpg");
 
 	public MissionValidationResponse validateMission(Long missionId, MultipartFile image) {
-		validateImageFile(image);
-
 		Mission mission = missionRepository.findById(missionId)
 			.orElseThrow(() -> new CustomException(MissionErrorCode.MISSION_NOT_FOUND));
 
@@ -36,21 +28,6 @@ public class MissionService {
 		MissionResult missionResult = openAIUtil.sendPrompt(prompt, image);
 
 		return new MissionValidationResponse(missionResult);
-	}
-	
-	private void validateImageFile(MultipartFile image) {
-		if (image == null || image.isEmpty()) {
-			throw new CustomException(MissionErrorCode.INVALID_IMAGE_FILE);
-		}
-		
-		if (image.getSize() > MAX_FILE_SIZE) {
-			throw new CustomException(MissionErrorCode.FILE_SIZE_EXCEEDED);
-		}
-		
-		String contentType = image.getContentType();
-		if (contentType == null || !ALLOWED_TYPES.contains(contentType)) {
-			throw new CustomException(MissionErrorCode.NOT_IMAGE_FILE);
-		}
 	}
 
 	private String getPrompt(Mission mission) {
