@@ -1,18 +1,16 @@
 package laughcandidate.yellowribbonbe.global.exception;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.AuthErrorCode;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.CommonErrorCode;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.ErrorCode;
@@ -27,7 +25,6 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = CustomException.class)
 	public ResponseEntity<ErrorResponse<Void>> handleCustomException(CustomException e) {
 		ErrorCode errorCode = e.getErrorCode();
-
 		return ResponseEntity.status(errorCode.getHttpStatus())
 			.body(ErrorResponse.error(errorCode.getCode(), e.getMessage()));
 	}
@@ -36,19 +33,22 @@ public class GlobalExceptionHandler {
 	 * 데이터 유효성 검사가 실패할 경우
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	protected ResponseEntity<ErrorResponse<Map<String, String>>> handleMethodArgumentNotValidException(
+	protected ResponseEntity<ErrorResponse<Void>> handleMethodArgumentNotValidException(
 		MethodArgumentNotValidException e) {
-		Map<String, String> errors = new HashMap<>();
+
 		BindingResult bindingResult = e.getBindingResult();
+		String firstErrorMessage = null;
 
-		for (FieldError fieldError : bindingResult.getFieldErrors()) {
-			errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+		if (!bindingResult.getFieldErrors().isEmpty()) {
+			firstErrorMessage = bindingResult.getFieldErrors().get(0).getDefaultMessage();
 		}
-
+		else if (!bindingResult.getGlobalErrors().isEmpty()) {
+			firstErrorMessage = bindingResult.getGlobalErrors().get(0).getDefaultMessage();
+		}
 
 		CommonErrorCode errorCode = CommonErrorCode.INVALID_VALUE;
 		return ResponseEntity.status(errorCode.getHttpStatus())
-			.body(ErrorResponse.error(errors, errorCode.getCode(), errorCode.getMessage()));
+			.body(ErrorResponse.error(errorCode.getCode(), firstErrorMessage != null ? firstErrorMessage : errorCode.getMessage()));
 	}
 
 	/**
@@ -60,6 +60,26 @@ public class GlobalExceptionHandler {
 		AuthErrorCode errorCode = AuthErrorCode.INVALID_TOKEN;
 		return ResponseEntity.status(errorCode.getHttpStatus())
 			.body(ErrorResponse.error(errorCode.getCode(), errorCode.getMessage()));
+	}
+
+	/**
+	 * 🆕 @ModelAttribute + @Valid 검증 실패 시 발생 (Form/Multipart 요청)
+	 */
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<ErrorResponse<Void>> handleConstraintViolationException(
+		ConstraintViolationException e) {
+
+		String firstErrorMessage = null;
+
+		for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+			if (firstErrorMessage == null) {
+				firstErrorMessage = violation.getMessage();
+			}
+		}
+
+		CommonErrorCode errorCode = CommonErrorCode.INVALID_VALUE;
+		return ResponseEntity.status(errorCode.getHttpStatus())
+			.body(ErrorResponse.error(errorCode.getCode(), firstErrorMessage != null ? firstErrorMessage : errorCode.getMessage()));
 	}
 
 	/**
