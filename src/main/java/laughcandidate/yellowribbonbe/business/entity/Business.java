@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import laughcandidate.yellowribbonbe.global.entity.BaseEntity;
 import laughcandidate.yellowribbonbe.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "BUSINESS")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Business {
+public class Business extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
