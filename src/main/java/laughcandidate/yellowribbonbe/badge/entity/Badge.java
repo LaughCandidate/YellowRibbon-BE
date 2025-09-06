@@ -21,8 +21,4 @@ public class Badge extends BaseEntity {
     @Column(name = "category")
     private Category category;
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "status")
-    private Status status;
-
 }

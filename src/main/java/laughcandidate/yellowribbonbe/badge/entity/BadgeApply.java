@@ -26,7 +26,8 @@ public class BadgeApply extends BaseEntity {
     @JoinColumn(name = "badge_id", nullable = false)
     private Badge badge;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private Status status;
 
 }

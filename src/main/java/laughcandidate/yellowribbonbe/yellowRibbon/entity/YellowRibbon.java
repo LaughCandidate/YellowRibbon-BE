@@ -21,6 +21,6 @@ public class YellowRibbon extends BaseEntity {
     private String benefit;
 
     @Column(name = "season")
-    private int season;
+    private Integer season;
 
 }
