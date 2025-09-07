@@ -1,6 +1,7 @@
 package laughcandidate.yellowribbonbe.badge.entity;
 
 import jakarta.persistence.*;
+import laughcandidate.yellowribbonbe.business.entity.Business;
 import laughcandidate.yellowribbonbe.global.entity.BaseEntity;
 import laughcandidate.yellowribbonbe.user.entity.User;
 import lombok.AccessLevel;
@@ -25,6 +26,10 @@ public class BadgeApply extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "badge_id", nullable = false)
     private Badge badge;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "business_id", nullable = false)
+    private Business business;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")

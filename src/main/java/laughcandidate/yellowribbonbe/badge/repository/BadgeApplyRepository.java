@@ -16,14 +16,14 @@ public interface BadgeApplyRepository extends JpaRepository<BadgeApply, Long> {
 	@Query("SELECT DISTINCT ba FROM BadgeApply ba " +
 		"JOIN FETCH ba.user u " +
 		"JOIN FETCH ba.badge b " +
-		"LEFT JOIN FETCH Business bus ON bus.user = u " +
+		"JOIN FETCH ba.business bus " +
 		"ORDER BY ba.createdAt DESC ")
 	Page<BadgeApply> findAllWithBasicInfo(Pageable pageable);
 
 	@Query("SELECT DISTINCT ba FROM BadgeApply ba " +
 		"JOIN FETCH ba.user u " +
 		"JOIN FETCH ba.badge b " +
-		"LEFT JOIN FETCH Business bus ON bus.user = u " +
+		"JOIN FETCH ba.business bus " +
 		"WHERE ba.status = :status " +
 		"ORDER BY ba.createdAt DESC")
 	Page<BadgeApply> findByStatusWithBasicInfo(@Param("status") Status status, Pageable pageable);
@@ -31,7 +31,7 @@ public interface BadgeApplyRepository extends JpaRepository<BadgeApply, Long> {
 	@Query("SELECT ba FROM BadgeApply ba " +
 		"JOIN FETCH ba.user u " +
 		"JOIN FETCH ba.badge b " +
-		"LEFT JOIN FETCH Business bus ON bus.user = u " +
+		"JOIN FETCH ba.business bus " +
 		"WHERE ba.id = :id")
 	Optional<BadgeApply> findByIdWithAllDetails(@Param("id") Long id);
 }
