@@ -111,6 +111,37 @@ class AdminBadgeServiceTest {
 		verify(badgeApplyRepository).findByIdWithAllDetails(badgeApplyId);
 	}
 
+	@Test
+	@DisplayName("배지 신청을 승인한다")
+	void approveBadgeApplication() {
+		// given
+		Long badgeApplyId = 1L;
+		BadgeApply badgeApply = createMockBadgeApply();
+		given(badgeApplyRepository.findById(badgeApplyId)).willReturn(Optional.of(badgeApply));
+
+		// when
+		adminBadgeService.approveBadgeApplication(badgeApplyId);
+
+		// then
+		assertThat(badgeApply.getStatus()).isEqualTo(Status.COMPLETE);
+		verify(badgeApplyRepository).findById(badgeApplyId);
+	}
+
+	@Test
+	@DisplayName("존재하지 않는 배지 신청 승인 시 예외를 발생시킨다")
+	void approveBadgeApplication_NotFound() {
+		// given
+		Long badgeApplyId = 999L;
+		given(badgeApplyRepository.findById(badgeApplyId)).willReturn(Optional.empty());
+
+		// when & then
+		assertThatThrownBy(() -> adminBadgeService.approveBadgeApplication(badgeApplyId))
+			.isInstanceOf(CustomException.class)
+			.hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.BADGE_APPLY_NOT_FOUND);
+
+		verify(badgeApplyRepository).findById(badgeApplyId);
+	}
+
 	private BadgeApply createMockBadgeApply() {
 		User user = User.builder()
 			.name("홍길동")
@@ -129,7 +160,6 @@ class AdminBadgeServiceTest {
 			.user(user)
 			.build();
 
-		// Badge는 단순히 Mock만 생성 (stubbing 제거)
 		Badge badge = mock(Badge.class);
 
 		return BadgeApply.builder()
