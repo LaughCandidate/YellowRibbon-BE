@@ -43,4 +43,8 @@ public class BadgeApply extends BaseEntity {
         this.business = business;
         this.status = status;
     }
+
+    public void approveApplication() {
+        this.status = Status.COMPLETE;
+    }
 }

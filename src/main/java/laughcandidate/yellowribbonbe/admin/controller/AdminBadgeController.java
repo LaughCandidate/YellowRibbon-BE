@@ -5,6 +5,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,5 +55,17 @@ public class AdminBadgeController {
 	) {
 		BadgeApply badgeApply = adminBadgeService.getBadgeApplyDetail(badgeApplyId);
 		return ResponseEntity.ok(ApiResponse.ok(badgeApply));
+	}
+
+	@PostMapping("/{badgeApplyId}/approve")
+	@Operation(
+		summary = "배지 신청 승인 API",
+		description = "배지 신청을 승인하여 배지를 발급합니다.")
+	public ResponseEntity<ApiResponse<Void>> approveBadgeApplication(
+		@Parameter(description = "배지 신청 ID")
+		@PathVariable Long badgeApplyId
+	) {
+		adminBadgeService.approveBadgeApplication(badgeApplyId);
+		return ResponseEntity.ok(ApiResponse.ok(null));
 	}
 }
