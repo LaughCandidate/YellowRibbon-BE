@@ -36,4 +36,11 @@ public class AdminBadgeService {
 		return badgeApplyRepository.findByIdWithAllDetails(badgeApplyId)
 			.orElseThrow(() -> new CustomException(AdminErrorCode.BADGE_APPLY_NOT_FOUND));
 	}
+
+	@Transactional
+	public void approveBadgeApplication(Long badgeApplyId) {
+		BadgeApply badgeApply = badgeApplyRepository.findById(badgeApplyId)
+			.orElseThrow(() -> new CustomException(AdminErrorCode.BADGE_APPLY_NOT_FOUND));
+		badgeApply.approveApplication();
+	}
 }
