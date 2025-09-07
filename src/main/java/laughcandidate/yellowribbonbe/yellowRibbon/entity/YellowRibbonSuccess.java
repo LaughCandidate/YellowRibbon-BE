@@ -1,6 +1,7 @@
 package laughcandidate.yellowribbonbe.yellowRibbon.entity;
 
 import jakarta.persistence.*;
+import laughcandidate.yellowribbonbe.business.entity.Business;
 import laughcandidate.yellowribbonbe.global.entity.BaseEntity;
 import laughcandidate.yellowribbonbe.user.entity.User;
 import lombok.AccessLevel;
@@ -21,6 +22,10 @@ public class YellowRibbonSuccess extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "business_id", nullable = false)
+    private Business business;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "yellow_ribbon_id", nullable = false)
