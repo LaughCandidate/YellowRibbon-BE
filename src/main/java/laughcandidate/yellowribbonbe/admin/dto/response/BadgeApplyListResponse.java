@@ -1,4 +1,4 @@
-package laughcandidate.yellowribbonbe.badge.dto.response;
+package laughcandidate.yellowribbonbe.admin.dto.response;
 
 import java.util.List;
 
