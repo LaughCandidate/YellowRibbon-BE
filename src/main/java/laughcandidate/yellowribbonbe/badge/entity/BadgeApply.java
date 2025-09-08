@@ -2,6 +2,7 @@ package laughcandidate.yellowribbonbe.badge.entity;
 
 import jakarta.persistence.*;
 import laughcandidate.yellowribbonbe.global.entity.BaseEntity;
+import laughcandidate.yellowribbonbe.global.entity.Status;
 import laughcandidate.yellowribbonbe.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
