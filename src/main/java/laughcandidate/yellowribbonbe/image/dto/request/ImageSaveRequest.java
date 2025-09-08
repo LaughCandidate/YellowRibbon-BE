@@ -6,9 +6,9 @@ import laughcandidate.yellowribbonbe.image.entity.ImageType;
 
 @Schema(name = "ImageSaveRequest: 이미지 정보 저장 요청 Dto")
 public record ImageSaveRequest(
-	@NotBlank(message = "미션 제출 ID는 필수 입력값입니다.")
-	@Schema(description = "미션 제출 ID 식별값", example = "1L")
-	Long missionSubmitId,
+	@NotBlank(message = "미션 ID는 필수 입력값입니다.")
+	@Schema(description = "미션 ID 식별값", example = "1L")
+	Long missionId,
 
 	@NotBlank(message = "이미지 식별값은 필수 입력값입니다.")
 	@Schema(description = "이미지 식별값", example = "1vvwefwe")
@@ -24,10 +24,6 @@ public record ImageSaveRequest(
 
 	@NotBlank(message = "확장자명은 필수 입력값입니다.")
 	@Schema(description = "확장자명", example = "확장자")
-	ImageType imageType,
-
-	@NotBlank(message = "성공 여부는 필수 입력값입니다.")
-	@Schema(description = "성공 여부", example = "true")
-	Boolean isSuccess
+	ImageType imageType
 ) {
 }

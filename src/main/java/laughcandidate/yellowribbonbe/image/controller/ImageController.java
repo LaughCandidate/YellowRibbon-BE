@@ -59,9 +59,9 @@ public class ImageController {
 		@RequestBody ImageSaveRequest imageSaveRequest,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-		ImageSaveResponse imageSaveResponse = imageService.saveImage(imageSaveRequest.missionSubmitId(),
+		ImageSaveResponse imageSaveResponse = imageService.saveImage(imageSaveRequest.missionId(),
 			imageSaveRequest.uuid(), imageSaveRequest.originalName(),
-			imageSaveRequest.size(), imageSaveRequest.imageType(), imageSaveRequest.isSuccess());
+			imageSaveRequest.size(), imageSaveRequest.imageType(), customUserDetails.getBusinessId());
 		return ResponseEntity.ok(ApiResponse.created(imageSaveResponse));
 	}
 }
