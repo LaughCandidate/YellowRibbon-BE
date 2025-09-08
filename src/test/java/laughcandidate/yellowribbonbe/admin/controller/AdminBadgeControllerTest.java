@@ -69,7 +69,7 @@ class AdminBadgeControllerTest {
 			.hasPrevious(false)
 			.build();
 
-		given(adminBadgeService.getAllBadgeApplies(any(Pageable.class))).willReturn(response);
+		given(adminBadgeService.getBadgeApplies(eq(null), any(Pageable.class))).willReturn(response);
 
 		// when & then
 		mockMvc.perform(get("/admin/badge/list")
@@ -113,8 +113,7 @@ class AdminBadgeControllerTest {
 			.hasPrevious(false)
 			.build();
 
-		given(adminBadgeService.getBadgeAppliesByStatus(eq(Status.PENDING),
-			any(Pageable.class)))
+		given(adminBadgeService.getBadgeApplies(eq(Status.PENDING), any(Pageable.class)))
 			.willReturn(response);
 
 		// when & then
