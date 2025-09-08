@@ -1,4 +1,4 @@
-package laughcandidate.yellowribbonbe.badge.entity;
+package laughcandidate.yellowribbonbe.global.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
