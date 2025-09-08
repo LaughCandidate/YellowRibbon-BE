@@ -89,6 +89,10 @@ public class TokenProvider {
 		}
 	}
 
+	public UserTokenResponse createBusinessToken(String uid, Long userId, String role, Long businessId) {
+		return createLoginToken(uid, userId, role, businessId);
+	}
+
 	public String createAccessToken(final String uid, final String role, final long expiredTime,
 		final Long businessId) {
 		return createToken(uid, role, expiredTime, businessId);
