@@ -39,9 +39,9 @@ public class BusinessService {
 	private final TokenProvider tokenProvider;
 
 	@Transactional
-	public ConnectResponse connectBusinessRequired(String businessNo, String ownerName, String startDate,
+	public ConnectResponse connectBusiness(String businessNo, String ownerName, String startDate,
 		String businessName,
-		boolean isLast, Long userId) {
+		Long userId) {
 		validateBusiness(businessNo, ownerName, startDate);
 
 		User user = userRepository.findById(userId)
@@ -51,25 +51,13 @@ public class BusinessService {
 
 		Business business = saveBusiness(businessNo, businessName, ownerName, parsedStartDate, user);
 
-		if (isLast) {
+		if (user.getRole() == Role.ROLE_TEMP_USER) {
 			user.updateRole();
-			UserTokenResponse token = tokenProvider.createLoginToken(user.getUid(), userId, Role.ROLE_USER.getRole(), business.getId());
-			return new ConnectResponse(isLast, token.accessToken(), token.refreshToken());
 		}
 
-		return new ConnectResponse(isLast, null, null);
-	}
+		UserTokenResponse token = tokenProvider.createLoginToken(user.getUid(), userId, Role.ROLE_USER.getRole(), business.getId());
 
-	public void connectBusinessOptional(String businessNo, String ownerName, String startDate, String businessName,
-		Long userId) {
-		validateBusiness(businessNo, ownerName, startDate);
-
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(AuthErrorCode.USER_NOT_FOUND));
-
-		LocalDate parsedStartDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyyMMdd"));
-
-		saveBusiness(businessNo, businessName, ownerName, parsedStartDate, user);
+		return new ConnectResponse(token.accessToken(), token.refreshToken(), user.getRole(), business.getId());
 	}
 
 	@Transactional(readOnly = true)

@@ -2,10 +2,9 @@ package laughcandidate.yellowribbonbe.business.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
-@Schema(name = "ConnectRequiredRequest: 임시 사업자 연동 요청 Dto")
-public record ConnectRequiredRequest(
+@Schema(name = "ConnectRequest: 임시 사업자 연동 요청 Dto")
+public record ConnectRequest(
 	@NotBlank(message = "사업자 번호는 필수 입력값입니다.")
 	@Schema(description = "사업자 번호", example = "12345678")
 	String businessNo,
@@ -20,10 +19,6 @@ public record ConnectRequiredRequest(
 
 	@NotBlank(message = "사업자명은 필수 입력값입니다.")
 	@Schema(description = "사업자 이름", example = "돌돌")
-	String businessName,
-
-	@NotNull(message = "마지막 값 여부는 필수 입력값입니다.")
-	@Schema(description = "마지막 값 여부", example = "true")
-	boolean isLast
+	String businessName
 ) {
 }
