@@ -91,6 +91,10 @@ dependencies {
 
     // AI
     implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+
+    // AWS S3
+    implementation platform("software.amazon.awssdk:bom:2.27.21")
+    implementation "software.amazon.awssdk:s3"
 }
 dependencyManagement {
     imports {
