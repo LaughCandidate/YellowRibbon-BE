@@ -3,7 +3,7 @@ package laughcandidate.yellowribbonbe.badge.repository;
 import laughcandidate.yellowribbonbe.badge.entity.BadgeApply;
 import laughcandidate.yellowribbonbe.badge.entity.Badge;
 import laughcandidate.yellowribbonbe.badge.entity.Category;
-import laughcandidate.yellowribbonbe.badge.entity.Status;
+import laughcandidate.yellowribbonbe.global.entity.Status;
 import laughcandidate.yellowribbonbe.business.entity.Business;
 import laughcandidate.yellowribbonbe.business.repository.BusinessRepository;
 import laughcandidate.yellowribbonbe.user.entity.Role;

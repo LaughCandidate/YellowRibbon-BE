@@ -1,7 +1,7 @@
 package laughcandidate.yellowribbonbe.badge.repository;
 
 import laughcandidate.yellowribbonbe.badge.entity.BadgeApply;
-import laughcandidate.yellowribbonbe.badge.entity.Status;
+import laughcandidate.yellowribbonbe.global.entity.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

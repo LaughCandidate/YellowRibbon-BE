@@ -4,7 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import laughcandidate.yellowribbonbe.badge.entity.BadgeApply;
-import laughcandidate.yellowribbonbe.badge.entity.Status;
+import laughcandidate.yellowribbonbe.global.entity.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import laughcandidate.yellowribbonbe.admin.dto.response.BadgeApplyListResponse;
 import laughcandidate.yellowribbonbe.badge.entity.BadgeApply;
-import laughcandidate.yellowribbonbe.badge.entity.Status;
 import laughcandidate.yellowribbonbe.badge.repository.BadgeApplyRepository;
+import laughcandidate.yellowribbonbe.global.entity.Status;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.AdminErrorCode;
 import lombok.RequiredArgsConstructor;

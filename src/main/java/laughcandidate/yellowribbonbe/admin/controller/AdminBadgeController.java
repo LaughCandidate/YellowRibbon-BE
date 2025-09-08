@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import laughcandidate.yellowribbonbe.admin.dto.response.BadgeApplyListResponse;
 import laughcandidate.yellowribbonbe.admin.service.AdminBadgeService;
 import laughcandidate.yellowribbonbe.badge.entity.BadgeApply;
-import laughcandidate.yellowribbonbe.badge.entity.Status;
+import laughcandidate.yellowribbonbe.global.entity.Status;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import laughcandidate.yellowribbonbe.badge.entity.BadgeApply;
 import laughcandidate.yellowribbonbe.badge.entity.Category;
-import laughcandidate.yellowribbonbe.badge.entity.Status;
+import laughcandidate.yellowribbonbe.global.entity.Status;
 import lombok.Builder;
 
 @Builder

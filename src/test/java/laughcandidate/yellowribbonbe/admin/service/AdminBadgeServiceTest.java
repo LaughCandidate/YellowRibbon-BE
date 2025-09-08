@@ -3,7 +3,7 @@ package laughcandidate.yellowribbonbe.admin.service;
 import laughcandidate.yellowribbonbe.admin.dto.response.BadgeApplyListResponse;
 import laughcandidate.yellowribbonbe.badge.entity.BadgeApply;
 import laughcandidate.yellowribbonbe.badge.entity.Badge;
-import laughcandidate.yellowribbonbe.badge.entity.Status;
+import laughcandidate.yellowribbonbe.global.entity.Status;
 import laughcandidate.yellowribbonbe.badge.repository.BadgeApplyRepository;
 import laughcandidate.yellowribbonbe.business.entity.Business;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
