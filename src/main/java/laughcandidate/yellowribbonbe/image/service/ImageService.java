@@ -7,15 +7,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import laughcandidate.yellowribbonbe.ai.util.OpenAIUtil;
+import laughcandidate.yellowribbonbe.business.entity.Business;
+import laughcandidate.yellowribbonbe.business.repository.BusinessRepository;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
+import laughcandidate.yellowribbonbe.global.exception.errorCode.BusinessErrorCode;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.ImageErrorCode;
-import laughcandidate.yellowribbonbe.global.exception.errorCode.MissionSubmitErrorCode;
+import laughcandidate.yellowribbonbe.global.exception.errorCode.MissionErrorCode;
 import laughcandidate.yellowribbonbe.image.dto.response.ImageSaveResponse;
 import laughcandidate.yellowribbonbe.image.dto.response.PresignedUrlResponse;
 import laughcandidate.yellowribbonbe.image.entity.Image;
 import laughcandidate.yellowribbonbe.image.entity.ImageType;
 import laughcandidate.yellowribbonbe.image.repository.ImageRepository;
+import laughcandidate.yellowribbonbe.mission.entity.Mission;
 import laughcandidate.yellowribbonbe.mission.entity.MissionSubmit;
+import laughcandidate.yellowribbonbe.mission.repository.MissionRepository;
 import laughcandidate.yellowribbonbe.mission.repository.MissionSubmitRepository;
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -32,7 +38,10 @@ public class ImageService {
 
 	private final S3Presigner s3Presigner;
 	private final ImageRepository imageRepository;
+	private final MissionRepository missionRepository;
 	private final MissionSubmitRepository missionSubmitRepository;
+	private final BusinessRepository businessRepository;
+	private final OpenAIUtil openAIUtil;
 	
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucketName;
@@ -77,16 +86,25 @@ public class ImageService {
 	}
 
 	@Transactional
-	public ImageSaveResponse saveImage(Long missionSubmitId, String uuid, String originalName, Integer size, ImageType imageType, Boolean isSuccess) {
-		MissionSubmit missionSubmit = missionSubmitRepository.findById(missionSubmitId)
-			.orElseThrow(() -> new CustomException(MissionSubmitErrorCode.MISSION_SUBMIT_NOT_FOUND));
+	public ImageSaveResponse saveImage(Long missionId, String uuid, String originalName, Integer size, ImageType imageType, Long businessId) {
+		Mission mission = missionRepository.findById(missionId)
+			.orElseThrow(() -> new CustomException(MissionErrorCode.MISSION_NOT_FOUND));
+		
+		Business business = businessRepository.findById(businessId)
+			.orElseThrow(() -> new CustomException(BusinessErrorCode.BUSINESS_NOT_FOUND));
+		
+		MissionSubmit missionSubmit = MissionSubmit.builder()
+			.mission(mission)
+			.business(business)
+			.build();
+		
+		missionSubmitRepository.save(missionSubmit);
 		
 		Image image = Image.builder()
 			.uuid(uuid)
 			.originalName(originalName)
 			.size(size)
 			.type(imageType)
-			.isSuccess(isSuccess)
 			.missionSubmit(missionSubmit)
 			.build();
 		

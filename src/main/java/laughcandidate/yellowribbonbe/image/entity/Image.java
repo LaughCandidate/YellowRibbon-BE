@@ -59,4 +59,8 @@ public class Image extends BaseEntity {
 		this.type = type;
 		this.uuid = uuid;
 	}
+	
+	public void updateIsSuccess(Boolean isSuccess) {
+		this.isSuccess = isSuccess;
+	}
 }
