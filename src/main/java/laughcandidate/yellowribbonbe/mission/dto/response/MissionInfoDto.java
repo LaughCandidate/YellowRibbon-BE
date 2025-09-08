@@ -19,5 +19,8 @@ public record MissionInfoDto(
     Long missionId,
     
     @Schema(description = "배지 카테고리")
-    Category category
+    Category category,
+
+    @Schema(description = "미션 시도 여부")
+    Boolean tried
 ) {}
