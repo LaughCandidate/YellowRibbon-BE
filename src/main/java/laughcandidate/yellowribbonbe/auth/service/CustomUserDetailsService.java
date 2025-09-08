@@ -1,12 +1,10 @@
 package laughcandidate.yellowribbonbe.auth.service;
 
-import java.util.Optional;
-
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import laughcandidate.yellowribbonbe.user.entity.User;
+import laughcandidate.yellowribbonbe.user.dto.response.UserBusinessInfo;
 import laughcandidate.yellowribbonbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -18,12 +16,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public CustomUserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-		Optional<User> user = userRepository.findByLoginIdAndIsDeletedFalse(id);
+		UserBusinessInfo userBusinessInfo = userRepository.findUserBusinessInfoWithId(id);
 
-		if (user.isPresent()) {
-			User loginUser = user.get();
-			return new CustomUserDetails(loginUser.getUid(), loginUser.getId(), loginUser.getPassword(),
-				loginUser.getRole().getRole());
+		if (userBusinessInfo != null) {
+			return new CustomUserDetails(
+				userBusinessInfo.uid(),
+				userBusinessInfo.userId(),
+				userBusinessInfo.password(),
+				userBusinessInfo.role(),
+				userBusinessInfo.businessId()
+			);
 		}
 		return null;
 	}

@@ -15,9 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
-import laughcandidate.yellowribbonbe.auth.jwt.dto.UserTokenResponse;
-import laughcandidate.yellowribbonbe.auth.util.BearerUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -27,13 +26,13 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import laughcandidate.yellowribbonbe.auth.jwt.dto.UserTokenResponse;
+import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
+import laughcandidate.yellowribbonbe.auth.util.BearerUtil;
 import laughcandidate.yellowribbonbe.auth.util.ResponseUtil;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.AuthErrorCode;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import jakarta.servlet.http.HttpServletResponse;
 import laughcandidate.yellowribbonbe.user.entity.Role;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,18 +49,11 @@ public class TokenProvider {
 		this.redisTemplate = redisTemplate;
 	}
 
-	public UserTokenResponse createLoginToken(final String uid, final Long userId, final String role) {
-
-		String accessToken;
-		String refreshToken;
-
-		if (role.equals(Role.TEMP_USER.getRole())) {
-			accessToken = createAccessToken(uid, role, TEMP_ACCESS_TOKEN_EXPIRATION_MINUTE * MINUTE_IN_MILLISECONDS);
-			refreshToken = createRefreshToken(uid, role, TEMP_REFRESH_TOKEN_EXPIRATION_DAYS * DAYS_IN_MILLISECONDS);
-		} else {
-			accessToken = createAccessToken(uid, role, ACCESS_TOKEN_EXPIRATION_MINUTE * MINUTE_IN_MILLISECONDS);
-			refreshToken = createRefreshToken(uid, role, REFRESH_TOKEN_EXPIRATION_DAYS * DAYS_IN_MILLISECONDS);
-		}
+	public UserTokenResponse createTempLoginToken(final String uid, final Long userId, final String role) {
+		String accessToken = createAccessToken(uid, role,
+			TEMP_ACCESS_TOKEN_EXPIRATION_MINUTE * MINUTE_IN_MILLISECONDS, null);
+		String refreshToken = createRefreshToken(uid, role,
+			TEMP_REFRESH_TOKEN_EXPIRATION_DAYS * DAYS_IN_MILLISECONDS, null);
 
 		saveRefreshToken(uid, refreshToken);
 		saveUserId(uid, userId);
@@ -72,12 +64,39 @@ public class TokenProvider {
 		);
 	}
 
-	public String createAccessToken(final String uid, final String role, final long expiredTime) {
-		return createToken(uid, role, expiredTime);
+	public UserTokenResponse createLoginToken(final String uid, final Long userId, final String role,
+		final Long businessId) {
+
+		String accessToken = createAccessToken(uid, role,
+			ACCESS_TOKEN_EXPIRATION_MINUTE * MINUTE_IN_MILLISECONDS, businessId);
+		String refreshToken = createRefreshToken(uid, role,
+			REFRESH_TOKEN_EXPIRATION_DAYS * DAYS_IN_MILLISECONDS, businessId);
+
+		saveRefreshToken(uid, refreshToken);
+		saveUserId(uid, userId);
+
+		return new UserTokenResponse(
+			accessToken,
+			refreshToken
+		);
 	}
 
-	public String createRefreshToken(final String uid, final String role, final long expiredTime) {
-		return createToken(uid, role, expiredTime);
+	public UserTokenResponse createReissueToken(String uid, Long userId, String role, Long businessId) {
+		if (role.equals(Role.ROLE_TEMP_USER)) {
+			return createTempLoginToken(uid, userId, role);
+		} else {
+			return createLoginToken(uid, userId, role, businessId);
+		}
+	}
+
+	public String createAccessToken(final String uid, final String role, final long expiredTime,
+		final Long businessId) {
+		return createToken(uid, role, expiredTime, businessId);
+	}
+
+	public String createRefreshToken(final String uid, final String role, final long expiredTime,
+		final Long businessId) {
+		return createToken(uid, role, expiredTime, businessId);
 	}
 
 	public String resolveAccessToken(HttpServletRequest request) {
@@ -115,10 +134,10 @@ public class TokenProvider {
 		Claims claims = getClaimsFromToken(accessToken);
 		String uid = claims.getSubject();
 		String role = claims.get("role", String.class);
-
+		Long businessId = claims.get("businessId", Long.class);
 		try {
 			Long userId = getUserId(uid);
-			CustomUserDetails customUserDetails = CustomUserDetails.fromClaims(uid, userId, role);
+			CustomUserDetails customUserDetails = CustomUserDetails.fromClaims(uid, userId, role, businessId);
 			return new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 		} catch (CustomException e) {
 			ResponseUtil.writeErrorResponse(response, objectMapper, e.getErrorCode());
@@ -170,13 +189,14 @@ public class TokenProvider {
 		return Long.valueOf(userId);
 	}
 
-	private String createToken(final String uid, final String role, final long expireLength) {
+	private String createToken(final String uid, final String role, final long expireLength, Long businessId) {
 		Date now = new Date();
 		Date validity = new Date(now.getTime() + expireLength);
 
 		return Jwts.builder()
 			.subject(uid)
 			.claim("role", role)
+			.claim("businessId", businessId)
 			.issuedAt(now)
 			.expiration(validity)
 			.signWith(secretKey)

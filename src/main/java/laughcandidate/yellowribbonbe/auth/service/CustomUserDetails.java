@@ -20,13 +20,15 @@ public class CustomUserDetails implements UserDetails {
     private final Long userId;
     private final String password;
     private final String role;
+    private final Long businessId;
 
-    public static CustomUserDetails fromClaims(String uid, Long userId, String role) {
+    public static CustomUserDetails fromClaims(String uid, Long userId, String role, Long businessId) {
         return new CustomUserDetails(
             uid,
             userId,
             null,
-            role
+            role,
+            businessId
         );
     }
 

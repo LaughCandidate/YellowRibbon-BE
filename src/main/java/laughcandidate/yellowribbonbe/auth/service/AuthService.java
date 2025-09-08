@@ -92,26 +92,27 @@ public class AuthService {
 			.phone(phone)
 			.loginId(id)
 			.password(passwordEncoder.encode(password))
-			.role(Role.TEMP_USER)
+			.role(Role.ROLE_TEMP_USER)
 			.uid(uid)
 			.build();
 
 		userRepository.save(user);
 
-		UserTokenResponse token = tokenProvider.createLoginToken(uid, user.getId(), user.getRole().getRole());
+		UserTokenResponse token = tokenProvider.createTempLoginToken(uid, user.getId(), user.getRole().getRole());
 
 		return new RegisterResponse(uid, user.getRole().getRole(), token.accessToken(), token.refreshToken());
 	}
 
 	@Transactional
-	public ReissueTokenResponse reissue(String refreshToken) {
+	public ReissueTokenResponse reissue(String refreshToken, Long businessId) {
 		validateRefreshToken(refreshToken);
 		String uid = extractUidFromToken(refreshToken);
 		validateStoredRefreshToken(uid, refreshToken);
 		User user = getUserByUid(uid);
 		Long userId = getUserIdFromRedis(uid);
 
-		UserTokenResponse newTokens = tokenProvider.createLoginToken(uid, userId, user.getRole().getRole());
+		UserTokenResponse newTokens = tokenProvider.createReissueToken(uid, userId, user.getRole().getRole(),
+			businessId);
 		return new ReissueTokenResponse(newTokens.accessToken(), newTokens.refreshToken());
 	}
 
