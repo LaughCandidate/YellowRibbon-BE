@@ -26,10 +26,10 @@ public class BadgeController {
             summary = "전체 배지 목록 조회 API",
             description = "현재 사업장의 배지 목록 조회")
     public ResponseEntity<ApiResponse<BadgeInfoListResponse>> getBadgesInfo(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(value = "business_id", required = false) Long businessId) {
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        BadgeInfoListResponse badgesInfo = badgeService.getBadgesInfo(customUserDetails.getUserId(), customUserDetails.getBusinessId());
 
-        BadgeInfoListResponse badgesInfo = badgeService.getBadgesInfo(customUserDetails.getUserId(), businessId);
         return ResponseEntity.ok(ApiResponse.ok(badgesInfo));
     }
 
@@ -39,10 +39,9 @@ public class BadgeController {
             description = "배지 발급 신청")
     public ResponseEntity<ApiResponse<BadgeIssuanceResponse>> applyBadge(
             @RequestBody BadgeIssuanceRequest request,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(value = "business_id", required = false) Long businessId
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        BadgeIssuanceResponse result = badgeService.applyBadge(customUserDetails.getUserId(), businessId, request.badgeId());
+        BadgeIssuanceResponse result = badgeService.applyBadge(customUserDetails.getUserId(), customUserDetails.getBusinessId(), request.badgeId());
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
