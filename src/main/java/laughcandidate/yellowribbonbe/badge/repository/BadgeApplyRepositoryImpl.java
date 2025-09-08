@@ -89,4 +89,17 @@ public class BadgeApplyRepositoryImpl implements BadgeApplyRepositoryCustom {
     private BooleanExpression statusEq(Status status) {
         return status != null ? badgeApply.status.eq(status) : null;
     }
+
+    @Override
+    public List<BadgeApply> findByUserIdAndBusinessId(Long userId, Long businessId) {
+        return queryFactory
+                .selectFrom(badgeApply)
+                .join(badgeApply.badge, badge).fetchJoin()
+                .join(badgeApply.business, business).fetchJoin()
+                .where(
+                        badgeApply.user.id.eq(userId),
+                        badgeApply.business.id.eq(businessId)
+                )
+                .fetch();
+    }
 }

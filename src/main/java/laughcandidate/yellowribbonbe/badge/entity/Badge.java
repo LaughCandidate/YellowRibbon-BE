@@ -14,7 +14,7 @@ public class Badge extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bagde_id")
+    @Column(name = "badge_id")
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
