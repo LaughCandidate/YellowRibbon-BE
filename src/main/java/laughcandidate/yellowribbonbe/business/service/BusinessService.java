@@ -38,6 +38,7 @@ public class BusinessService {
 	private final UserRepository userRepository;
 	private final TokenProvider tokenProvider;
 
+	@Transactional
 	public ConnectResponse connectBusinessRequired(String businessNo, String ownerName, String startDate,
 		String businessName,
 		boolean isLast, Long userId) {
@@ -48,11 +49,11 @@ public class BusinessService {
 
 		LocalDate parsedStartDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyyMMdd"));
 
-		saveBusiness(businessNo, businessName, ownerName, parsedStartDate, user);
+		Business business = saveBusiness(businessNo, businessName, ownerName, parsedStartDate, user);
 
 		if (isLast) {
 			user.updateRole();
-			UserTokenResponse token = tokenProvider.createLoginToken(user.getUid(), userId, Role.USER.getRole());
+			UserTokenResponse token = tokenProvider.createLoginToken(user.getUid(), userId, Role.ROLE_USER.getRole(), business.getId());
 			return new ConnectResponse(isLast, token.accessToken(), token.refreshToken());
 		}
 
@@ -90,7 +91,7 @@ public class BusinessService {
 	}
 
 	@Transactional
-	protected void saveBusiness(String businessNo, String businessName, String ownerName, LocalDate startDate,
+	protected Business saveBusiness(String businessNo, String businessName, String ownerName, LocalDate startDate,
 		User user) {
 		Business business = Business.builder()
 			.businessNo(businessNo)
@@ -101,6 +102,8 @@ public class BusinessService {
 			.build();
 
 		businessRepository.save(business);
+
+		return business;
 	}
 
 	private void validateBusiness(String businessNo, String ownerName, String startDate) {
