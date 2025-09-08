@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
+import laughcandidate.yellowribbonbe.global.exception.errorCode.ImageErrorCode;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.MissionSubmitErrorCode;
 import laughcandidate.yellowribbonbe.image.dto.response.PresignedUrlResponse;
 import laughcandidate.yellowribbonbe.image.entity.Image;
@@ -35,10 +36,15 @@ public class ImageService {
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucketName;
 
-	public String createPresignedGetUrl(String keyName) {
+	@Transactional(readOnly = true)
+	public PresignedUrlResponse createPresignedGetUrl(Long imageId) {
+
+		Image image = imageRepository.findById(imageId)
+			.orElseThrow(() -> new CustomException(ImageErrorCode.IMAGE_NOT_FOUND));
+
 		GetObjectRequest objectRequest = GetObjectRequest.builder()
 			.bucket(bucketName)
-			.key(keyName)
+			.key(image.getUuid())
 			.build();
 
 		GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
@@ -48,7 +54,7 @@ public class ImageService {
 
 		PresignedGetObjectRequest presignedRequest = s3Presigner.presignGetObject(presignRequest);
 
-		return presignedRequest.url().toExternalForm();
+		return new PresignedUrlResponse(presignedRequest.url().toExternalForm(), image.getUuid());
 	}
 
 	public PresignedUrlResponse createPresignedPutUrl() {
