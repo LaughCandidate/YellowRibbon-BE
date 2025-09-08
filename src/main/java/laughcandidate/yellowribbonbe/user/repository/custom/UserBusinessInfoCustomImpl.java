@@ -34,7 +34,7 @@ public class UserBusinessInfoCustomImpl implements UserBusinessInfoCustom {
 			.leftJoin(business).on(business.user.eq(user))
 			.where(user.loginId.eq(id)
 				.and(user.isDeleted.eq(false)))
-			.orderBy(business.id.asc().nullsLast())
+			.orderBy(business.id.desc().nullsLast())
 			.fetchFirst();
 	}
 }
