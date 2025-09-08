@@ -20,7 +20,6 @@ import laughcandidate.yellowribbonbe.auth.filter.JwtAuthenticationFilter;
 import laughcandidate.yellowribbonbe.auth.handler.CustomAccessDeniedHandler;
 import laughcandidate.yellowribbonbe.auth.handler.CustomAuthenticationEntryPoint;
 import laughcandidate.yellowribbonbe.auth.jwt.TokenProvider;
-import laughcandidate.yellowribbonbe.user.entity.Role;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -58,8 +57,6 @@ public class SecurityConfig {
 			.httpBasic(AbstractHttpConfigurer::disable)
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/business/connect/required").hasAuthority(Role.ROLE_TEMP_USER.getRole())
-				.requestMatchers("/business/connect/optional").hasAuthority(Role.ROLE_USER.getRole())
 				.requestMatchers(WHITELIST).permitAll()
 				.requestMatchers(BLACKLIST).authenticated()
 				.anyRequest().authenticated())
