@@ -82,7 +82,7 @@ class AdminRibbonServiceTest {
                 .loginId("testuser")
                 .password("password")
                 .uid("test_uid")
-                .role(Role.USER)
+                .role(Role.ROLE_USER)
                 .build();
 
         Business business = Business.builder()

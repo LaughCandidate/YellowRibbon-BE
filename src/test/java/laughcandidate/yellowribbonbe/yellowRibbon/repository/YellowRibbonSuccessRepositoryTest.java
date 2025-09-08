@@ -57,7 +57,7 @@ class YellowRibbonSuccessRepositoryTest {
                 .password("password123")
                 .phone("010-1234-5678")
                 .uid("test-uid")
-                .role(Role.USER)
+                .role(Role.ROLE_USER)
                 .build();
         entityManager.persistAndFlush(testUser);
 
