@@ -34,4 +34,12 @@ public abstract class Product {
         this.description = description;
         this.badge = badge;
     }
+
+    public ProductCategory getCategory() {
+        if (this instanceof LoanProduct) return ProductCategory.LOAN;
+        if (this instanceof DepositProduct) return ProductCategory.DEPOSIT;
+        if (this instanceof InstallmentSavingProduct) return ProductCategory.SAVINGS;
+        if (this instanceof InsuranceProduct) return ProductCategory.INSURANCE;
+        throw new IllegalStateException("Unknown product type: " + this.getClass().getSimpleName());
+    }
 }

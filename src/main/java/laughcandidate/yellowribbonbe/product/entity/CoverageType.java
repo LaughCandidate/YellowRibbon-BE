@@ -3,9 +3,6 @@ package laughcandidate.yellowribbonbe.product.entity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 소상공인 대상 보험 상품의 주요 보장 종류를 정의하는 Enum
- */
 @Getter
 @RequiredArgsConstructor
 public enum CoverageType {
