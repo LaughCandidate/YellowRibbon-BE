@@ -1,6 +1,8 @@
 package laughcandidate.yellowribbonbe.mission.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
+import laughcandidate.yellowribbonbe.mission.dto.response.MissionListResponse;
 import laughcandidate.yellowribbonbe.mission.dto.request.MissionValidationRequest;
 import laughcandidate.yellowribbonbe.mission.dto.response.MissionValidationResponse;
 import laughcandidate.yellowribbonbe.mission.service.MissionService;
@@ -35,5 +39,18 @@ public class MissionController {
 
 		MissionValidationResponse result = missionService.validateMission(missionId, request.image());
 		return ResponseEntity.ok(ApiResponse.ok(result));
+	}
+
+	@GetMapping("/list/{badgeId}")
+	@Operation(
+		summary = "사용자의 미션 현황 조회 API",
+		description = "사용자의 미션 현황을 조회합니다."
+	)
+	public ResponseEntity<ApiResponse<MissionListResponse>> getMissionList(
+		@PathVariable Long badgeId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		MissionListResponse missionList = missionService.getMissionList(badgeId, customUserDetails.getBusinessId());
+		return ResponseEntity.ok(ApiResponse.ok(missionList));
 	}
 }
