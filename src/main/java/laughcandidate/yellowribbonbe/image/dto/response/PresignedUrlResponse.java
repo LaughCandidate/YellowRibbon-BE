@@ -2,6 +2,7 @@ package laughcandidate.yellowribbonbe.image.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(name = "PresignedUrlResponse: PresignedUrl 및 UUID 응답 Dto")
 public record PresignedUrlResponse(
 	@Schema(description = "Presigned URL", example = "https://bucket.s3.amazonaws.com/uuid?signature=...")
 	String presignedUrl,
