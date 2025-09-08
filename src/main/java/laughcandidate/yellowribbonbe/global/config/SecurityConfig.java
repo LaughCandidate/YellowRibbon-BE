@@ -58,9 +58,8 @@ public class SecurityConfig {
 			.httpBasic(AbstractHttpConfigurer::disable)
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/admin/**").hasAuthority(Role.ADMIN.getRole())
-				.requestMatchers("/business/connect/required").hasAuthority(Role.TEMP_USER.getRole())
-				.requestMatchers("/business/connect/optional").hasAuthority(Role.USER.getRole())
+				.requestMatchers("/business/connect/required").hasAuthority(Role.ROLE_TEMP_USER.getRole())
+				.requestMatchers("/business/connect/optional").hasAuthority(Role.ROLE_USER.getRole())
 				.requestMatchers(WHITELIST).permitAll()
 				.requestMatchers(BLACKLIST).authenticated()
 				.anyRequest().authenticated())

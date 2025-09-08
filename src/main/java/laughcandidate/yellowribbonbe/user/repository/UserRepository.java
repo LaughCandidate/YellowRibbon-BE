@@ -5,10 +5,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import laughcandidate.yellowribbonbe.user.entity.User;
+import laughcandidate.yellowribbonbe.user.repository.custom.UserBusinessInfoCustom;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-
-	Optional<User> findByLoginIdAndIsDeletedFalse(String loginId);
+public interface UserRepository extends JpaRepository<User, Long>, UserBusinessInfoCustom {
 
 	boolean existsByPhone(String phone);
 

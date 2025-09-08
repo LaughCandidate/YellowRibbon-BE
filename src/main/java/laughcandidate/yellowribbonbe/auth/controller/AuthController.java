@@ -1,6 +1,8 @@
 package laughcandidate.yellowribbonbe.auth.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,7 @@ import laughcandidate.yellowribbonbe.auth.dto.response.PhoneVerificationResultRe
 import laughcandidate.yellowribbonbe.auth.dto.response.RegisterResponse;
 import laughcandidate.yellowribbonbe.auth.dto.response.ReissueTokenResponse;
 import laughcandidate.yellowribbonbe.auth.service.AuthService;
+import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -74,10 +77,26 @@ public class AuthController {
 
 	@PostMapping("/reissue")
 	@Operation(
-		summary = "토큰 재발급 API",
+		summary = "토큰 만료로 인한 재발급 API",
 		description = "리프레시 토큰으로 새로운 액세스 토큰 발급")
-	public ApiResponse<ReissueTokenResponse> reissue(@RequestBody ReissueTokenRequest request) {
-		ReissueTokenResponse reissueTokenResponse = authService.reissue(request.refreshToken());
+	public ApiResponse<ReissueTokenResponse> reissue(@RequestBody ReissueTokenRequest request, @AuthenticationPrincipal
+	CustomUserDetails customUserDetails) {
+		ReissueTokenResponse reissueTokenResponse = authService.reissue(request.refreshToken(),
+			customUserDetails.getBusinessId());
+		return ApiResponse.ok(reissueTokenResponse);
+	}
+
+	@PostMapping("/reissue/{businessId}")
+	@Operation(
+		summary = "사업자 변환으로 인한 토큰 재발급 API",
+		description = "사업자 변환으로 인한 토큰 재발급")
+	public ApiResponse<ReissueTokenResponse> changeToken(@PathVariable Long businessId,
+		@AuthenticationPrincipal
+		CustomUserDetails customUserDetails) {
+
+		ReissueTokenResponse reissueTokenResponse = authService.changeToken(customUserDetails.getUid(),
+			customUserDetails.getUserId(), customUserDetails.getRole(),
+			businessId);
 		return ApiResponse.ok(reissueTokenResponse);
 	}
 }
