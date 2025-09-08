@@ -20,6 +20,14 @@ public class AdminBadgeService {
 	private final BadgeApplyRepository badgeApplyRepository;
 
 	@Transactional(readOnly = true)
+	public BadgeApplyListResponse getBadgeApplies(Status status, Pageable pageable) {
+		Page<BadgeApply> badgeApplyPage = status != null 
+			? badgeApplyRepository.findByStatusWithBasicInfo(status, pageable)
+			: badgeApplyRepository.findAllWithBasicInfo(pageable);
+		return BadgeApplyListResponse.from(badgeApplyPage);
+	}
+
+	@Transactional(readOnly = true)
 	public BadgeApplyListResponse getAllBadgeApplies(Pageable pageable) {
 		Page<BadgeApply> badgeApplyPage = badgeApplyRepository.findAllWithBasicInfo(pageable);
 		return BadgeApplyListResponse.from(badgeApplyPage);

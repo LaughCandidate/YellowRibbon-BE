@@ -38,10 +38,7 @@ public class AdminBadgeController {
 		@Parameter(description = "페이지 정보 (page, size, sort)")
 		@PageableDefault(size = 20, sort = "createdAt") Pageable pageable) {
 
-		BadgeApplyListResponse response = status != null
-			? adminBadgeService.getBadgeAppliesByStatus(status, pageable)
-			: adminBadgeService.getAllBadgeApplies(pageable);
-
+		BadgeApplyListResponse response = adminBadgeService.getBadgeApplies(status, pageable);
 		return ResponseEntity.ok(ApiResponse.ok(response));
 	}
 
