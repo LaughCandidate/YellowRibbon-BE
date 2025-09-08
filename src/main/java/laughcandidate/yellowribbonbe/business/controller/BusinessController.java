@@ -1,7 +1,5 @@
 package laughcandidate.yellowribbonbe.business.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +14,6 @@ import jakarta.validation.Valid;
 import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
 import laughcandidate.yellowribbonbe.business.dto.request.ConnectOptionalRequest;
 import laughcandidate.yellowribbonbe.business.dto.request.ConnectRequiredRequest;
-import laughcandidate.yellowribbonbe.business.dto.response.BusinessInfoResponse;
 import laughcandidate.yellowribbonbe.business.dto.response.BusinessInfoListResponse;
 import laughcandidate.yellowribbonbe.business.dto.response.ConnectResponse;
 import laughcandidate.yellowribbonbe.business.service.BusinessService;
