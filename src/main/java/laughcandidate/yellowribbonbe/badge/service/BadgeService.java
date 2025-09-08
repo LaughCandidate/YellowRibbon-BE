@@ -8,6 +8,16 @@ import laughcandidate.yellowribbonbe.badge.entity.Badge;
 import laughcandidate.yellowribbonbe.badge.entity.BadgeApply;
 import laughcandidate.yellowribbonbe.badge.repository.BadgeApplyRepository;
 import laughcandidate.yellowribbonbe.badge.repository.BadgeRepository;
+import laughcandidate.yellowribbonbe.business.entity.Business;
+import laughcandidate.yellowribbonbe.business.repository.BusinessRepository;
+import laughcandidate.yellowribbonbe.global.entity.Status;
+import laughcandidate.yellowribbonbe.global.exception.CustomException;
+import laughcandidate.yellowribbonbe.global.exception.errorCode.AuthErrorCode;
+import laughcandidate.yellowribbonbe.global.exception.errorCode.BadgeErrorCode;
+import laughcandidate.yellowribbonbe.global.exception.errorCode.BusinessErrorCode;
+import laughcandidate.yellowribbonbe.global.exception.errorCode.CommonErrorCode;
+import laughcandidate.yellowribbonbe.user.entity.User;
+import laughcandidate.yellowribbonbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +34,25 @@ public class BadgeService {
 
     private final BadgeRepository badgeRepository;
     private final BadgeApplyRepository badgeApplyRepository;
+    private final UserRepository userRepository;
+    private final BusinessRepository businessRepository;
 
     @Transactional(readOnly = true)
     public BadgeInfoListResponse getBadgesInfo(Long userId, Long businessId){
 
-        if (businessId == null) {
-            throw new IllegalArgumentException("businessId는 필수입니다.");
+        if (userId == null || businessId == null) {
+            throw new CustomException(CommonErrorCode.MISSING_PARAMETER);
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(AuthErrorCode.USER_NOT_FOUND));
+
+        Business business = businessRepository.findById(businessId)
+                .orElseThrow(() -> new CustomException(BusinessErrorCode.BUSINESS_NOT_FOUND));
+
+        // 사업자 - 사용자 매칭 검증
+        if (business.getUser() == null || !business.getUser().getId().equals(user.getId())) {
+            throw new CustomException(AuthErrorCode.ACCESS_DENIED);
         }
 
         List<Badge> badges = badgeRepository.findAll();
@@ -38,7 +61,12 @@ public class BadgeService {
                 badgeApplyRepository.findByUserIdAndBusinessId(userId, businessId);
 
         Map<Long, BadgeApply> applyMap = applies.stream()
-                .collect(Collectors.toMap(a -> a.getBadge().getId(), Function.identity()));
+                .sorted(Comparator.comparing(BadgeApply::getCreatedAt).reversed())
+                .collect(Collectors.toMap(
+                        a -> a.getBadge().getId(),
+                        Function.identity(),
+                        (existing, ignored) -> existing
+                ));
 
         List<BadgeInfoResponse> responses = badges.stream()
                 .sorted(Comparator.comparing((Badge b) -> b.getCategory() == null ? "" : b.getCategory().getCategory())
@@ -58,8 +86,35 @@ public class BadgeService {
         return new BadgeInfoListResponse(responses);
     }
 
+    @Transactional
     public BadgeIssuanceResponse applyBadge(Long userId, Long businessId, Long badgeId){
 
-    }
+        if (userId == null || businessId == null || badgeId == null) {
+            throw new CustomException(CommonErrorCode.MISSING_PARAMETER);
+        }
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(AuthErrorCode.USER_NOT_FOUND));
+        Business business = businessRepository.findById(businessId)
+                .orElseThrow(() -> new CustomException(BusinessErrorCode.BUSINESS_NOT_FOUND));
+        Badge badge = badgeRepository.findById(badgeId)
+                .orElseThrow(() -> new CustomException(BadgeErrorCode.BADGE_NOT_FOUND));
+
+
+        BadgeApply entity = BadgeApply.builder()
+                .user(user)
+                .business(business)
+                .badge(badge)
+                .status(Status.PENDING)
+                .build();
+
+        BadgeApply saved = badgeApplyRepository.save(entity);
+
+        return new BadgeIssuanceResponse(
+                saved.getId(),
+                businessId,
+                badgeId,
+                saved.getStatus().name()
+        );
+    }
 }
