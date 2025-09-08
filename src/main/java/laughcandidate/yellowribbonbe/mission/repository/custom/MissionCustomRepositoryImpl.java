@@ -29,13 +29,14 @@ public class MissionCustomRepositoryImpl implements MissionCustomRepository {
                         missionSubmit.status,
                         mission.description,
                         mission.id,
-                        badge.category
+                        badge.category,
+                        missionSubmit.id.isNotNull()
                 ))
-                .from(missionSubmit)
-                .join(missionSubmit.mission, mission)
+                .from(mission)
                 .join(mission.badge, badge)
-.where(badge.id.eq(badgeId)
+                .leftJoin(missionSubmit).on(missionSubmit.mission.id.eq(mission.id)
                         .and(missionSubmit.business.id.eq(businessId)))
+                .where(badge.id.eq(badgeId))
                 .fetch();
     }
 }
