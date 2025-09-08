@@ -13,6 +13,7 @@ import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
 import laughcandidate.yellowribbonbe.image.dto.request.GetPresignedUrlRequest;
 import laughcandidate.yellowribbonbe.image.dto.request.ImageSaveRequest;
+import laughcandidate.yellowribbonbe.image.dto.response.ImageSaveResponse;
 import laughcandidate.yellowribbonbe.image.dto.response.PresignedUrlResponse;
 import laughcandidate.yellowribbonbe.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -54,12 +55,13 @@ public class ImageController {
 		summary = "이미지 업로드 완료 API",
 		description = "이미지 메타데이터를 저장합니다."
 	)
-	public ResponseEntity<ApiResponse<Void>> saveImage(
+	public ResponseEntity<ApiResponse<ImageSaveResponse>> saveImage(
 		@RequestBody ImageSaveRequest imageSaveRequest,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-		imageService.saveImage(imageSaveRequest.missionSubmitId(), imageSaveRequest.uuid(), imageSaveRequest.originalName(),
+		ImageSaveResponse imageSaveResponse = imageService.saveImage(imageSaveRequest.missionSubmitId(),
+			imageSaveRequest.uuid(), imageSaveRequest.originalName(),
 			imageSaveRequest.size(), imageSaveRequest.imageType(), imageSaveRequest.isSuccess());
-		return ResponseEntity.ok(ApiResponse.noContent());
+		return ResponseEntity.ok(ApiResponse.created(imageSaveResponse));
 	}
 }

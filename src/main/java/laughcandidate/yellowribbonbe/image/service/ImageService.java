@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.ImageErrorCode;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.MissionSubmitErrorCode;
+import laughcandidate.yellowribbonbe.image.dto.response.ImageSaveResponse;
 import laughcandidate.yellowribbonbe.image.dto.response.PresignedUrlResponse;
 import laughcandidate.yellowribbonbe.image.entity.Image;
 import laughcandidate.yellowribbonbe.image.entity.ImageType;
@@ -76,7 +77,7 @@ public class ImageService {
 	}
 
 	@Transactional
-	public void saveImage(Long missionSubmitId, String uuid, String originalName, Integer size, ImageType imageType, Boolean isSuccess) {
+	public ImageSaveResponse saveImage(Long missionSubmitId, String uuid, String originalName, Integer size, ImageType imageType, Boolean isSuccess) {
 		MissionSubmit missionSubmit = missionSubmitRepository.findById(missionSubmitId)
 			.orElseThrow(() -> new CustomException(MissionSubmitErrorCode.MISSION_SUBMIT_NOT_FOUND));
 		
@@ -90,5 +91,7 @@ public class ImageService {
 			.build();
 		
 		imageRepository.save(image);
+
+		return new ImageSaveResponse(image.getId());
 	}
 }
