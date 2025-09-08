@@ -1,17 +1,12 @@
 package laughcandidate.yellowribbonbe.mission.service;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import laughcandidate.yellowribbonbe.ai.enums.MissionResult;
 import laughcandidate.yellowribbonbe.ai.util.OpenAIUtil;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.MissionErrorCode;
-import laughcandidate.yellowribbonbe.mission.dto.response.MissionListResponse;
-import laughcandidate.yellowribbonbe.mission.dto.response.MissionInfoDto;
 import laughcandidate.yellowribbonbe.mission.dto.response.MissionValidationResponse;
 import laughcandidate.yellowribbonbe.mission.entity.Mission;
 import laughcandidate.yellowribbonbe.mission.repository.MissionRepository;
@@ -33,17 +28,6 @@ public class MissionService {
 		MissionResult missionResult = openAIUtil.sendPrompt(prompt, image);
 
 		return new MissionValidationResponse(missionResult);
-	}
-
-	@Transactional(readOnly = true)
-	public MissionListResponse getMissionList(Long badgeId, Long businessId) {
-		List<MissionInfoDto> result = missionRepository.findMissionWithSubmitData(badgeId, businessId);
-		
-		if (result.isEmpty()) {
-			throw new CustomException(MissionErrorCode.MISSION_NOT_FOUND);
-		}
-
-		return new MissionListResponse(result);
 	}
 
 	private String getPrompt(Mission mission) {
