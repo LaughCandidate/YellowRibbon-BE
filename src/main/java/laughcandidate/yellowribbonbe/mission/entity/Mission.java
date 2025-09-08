@@ -2,10 +2,15 @@ package laughcandidate.yellowribbonbe.mission.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import laughcandidate.yellowribbonbe.badge.entity.Badge;
+import laughcandidate.yellowribbonbe.global.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "MISSION")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Mission {
+public class Mission extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,4 +31,8 @@ public class Mission {
 
 	@Column(name = "description")
 	private String description;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "badge_id", nullable = false)
+	private Badge badge;
 }
