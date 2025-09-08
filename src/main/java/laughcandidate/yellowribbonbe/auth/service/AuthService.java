@@ -116,6 +116,13 @@ public class AuthService {
 		return new ReissueTokenResponse(newTokens.accessToken(), newTokens.refreshToken());
 	}
 
+	@Transactional
+	public ReissueTokenResponse changeToken(String uid, Long userId, String role, Long businessId) {
+		UserTokenResponse newTokens = tokenProvider.createBusinessToken(uid, userId, role, businessId);
+
+		return new ReissueTokenResponse(newTokens.accessToken(), newTokens.refreshToken());
+	}
+
 	private void validateRefreshToken(String refreshToken) {
 		if (!tokenProvider.validateToken(refreshToken)) {
 			throw new CustomException(AuthErrorCode.INVALID_TOKEN);
