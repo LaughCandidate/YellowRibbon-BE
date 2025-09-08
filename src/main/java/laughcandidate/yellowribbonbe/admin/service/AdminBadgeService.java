@@ -60,7 +60,6 @@ public class AdminBadgeService {
 		
 		badgeApply.approveApplication();
 		
-		// 사용자가 완료된 배지가 5개인지 확인 후 리본 발급
 		long completedBadgeCount = badgeApplyRepository.countByUserIdAndStatus(
 			badgeApply.getUser().getId(), Status.COMPLETE);
 		

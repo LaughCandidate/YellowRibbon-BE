@@ -23,7 +23,7 @@ public class AdminRibbonController {
 
     private final AdminRibbonService adminRibbonService;
 
-    @GetMapping("/issues")
+    @GetMapping("/list")
     @Operation(
         summary = "리본 발급 내역 목록 조회 API", 
         description = "관리자용 리본 발급 내역을 페이지네이션으로 조회합니다.")
