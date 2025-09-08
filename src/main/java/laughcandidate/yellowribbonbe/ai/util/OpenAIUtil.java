@@ -1,15 +1,18 @@
 package laughcandidate.yellowribbonbe.ai.util;
 
+import java.net.URI;
+
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import laughcandidate.yellowribbonbe.ai.enums.MissionResult;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.MissionErrorCode;
+import laughcandidate.yellowribbonbe.image.entity.ImageType;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -18,12 +21,13 @@ public class OpenAIUtil {
 
 	private final ChatClient chatClient;
 
-	public MissionResult sendPrompt(String prompt, MultipartFile image) {
+	public MissionResult sendPrompt(String prompt, String imageUrl, ImageType imageType) {
 		validateInput(prompt);
+		validateImageUrl(imageUrl);
 
 		try {
-			ByteArrayResource imageResource = new ByteArrayResource(image.getBytes());
-			MimeType mimeType = MimeTypeUtils.parseMimeType(image.getContentType());
+			Resource imageResource = new UrlResource(URI.create(imageUrl));
+			MimeType mimeType = getMimeTypeFromImageType(imageType);
 
 			var chatResponse = chatClient.prompt()
 				.user(userSpec -> userSpec
@@ -42,6 +46,23 @@ public class OpenAIUtil {
 		if (prompt == null || prompt.trim().isEmpty()) {
 			throw new CustomException(MissionErrorCode.INVALID_PROMPT);
 		}
+	}
+
+	private void validateImageUrl(String imageUrl) {
+		if (imageUrl == null || imageUrl.trim().isEmpty()) {
+			throw new CustomException(MissionErrorCode.INVALID_IMAGE_FILE);
+		}
+	}
+
+	private MimeType getMimeTypeFromImageType(ImageType imageType) {
+		return switch (imageType) {
+			case JPEG, JPG -> MimeTypeUtils.IMAGE_JPEG;
+			case PNG -> MimeTypeUtils.IMAGE_PNG;
+			case GIF -> MimeTypeUtils.IMAGE_GIF;
+			case WEBP -> MimeType.valueOf("image/webp");
+			case BMP -> MimeType.valueOf("image/bmp");
+			case SVG -> MimeType.valueOf("image/svg+xml");
+		};
 	}
 
 	private MissionResult parseResponse(String response) {

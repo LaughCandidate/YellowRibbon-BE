@@ -16,6 +16,7 @@ import laughcandidate.yellowribbonbe.global.entity.Status;
 import laughcandidate.yellowribbonbe.image.entity.Image;
 import laughcandidate.yellowribbonbe.business.entity.Business;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -48,4 +49,17 @@ public class MissionSubmit extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "business_id", nullable = false)
 	private Business business;
+
+	@Builder
+	public MissionSubmit(Business business, Image image, Mission mission, String reason, Status status) {
+		this.business = business;
+		this.image = image;
+		this.mission = mission;
+		this.reason = reason;
+		this.status = status;
+	}
+	
+	public void updateStatus(Status status) {
+		this.status = status;
+	}
 }

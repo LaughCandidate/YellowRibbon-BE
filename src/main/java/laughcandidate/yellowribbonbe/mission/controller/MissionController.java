@@ -3,19 +3,18 @@ package laughcandidate.yellowribbonbe.mission.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
-import laughcandidate.yellowribbonbe.mission.dto.response.MissionListResponse;
 import laughcandidate.yellowribbonbe.mission.dto.request.MissionValidationRequest;
+import laughcandidate.yellowribbonbe.mission.dto.response.MissionListResponse;
 import laughcandidate.yellowribbonbe.mission.dto.response.MissionValidationResponse;
 import laughcandidate.yellowribbonbe.mission.service.MissionService;
 import lombok.RequiredArgsConstructor;
@@ -28,16 +27,17 @@ public class MissionController {
 
 	private final MissionService missionService;
 
-	@PostMapping("/{missionId}/validate")
+	@PostMapping("/validate")
 	@Operation(
 		summary = "미션 검증 API",
 		description = "업로드된 이미지가 미션을 완료했는지 AI로 검증합니다."
 	)
 	public ResponseEntity<ApiResponse<MissionValidationResponse>> validateMission(
-		@PathVariable Long missionId,
-		@Valid @ModelAttribute MissionValidationRequest request) {
+		@RequestBody MissionValidationRequest missionValidationRequest,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-		MissionValidationResponse result = missionService.validateMission(missionId, request.image());
+		MissionValidationResponse result = missionService.
+			validateMission(missionValidationRequest.imageId());
 		return ResponseEntity.ok(ApiResponse.ok(result));
 	}
 

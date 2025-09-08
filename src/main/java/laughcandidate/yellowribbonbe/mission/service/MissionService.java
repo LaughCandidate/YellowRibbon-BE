@@ -8,13 +8,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import laughcandidate.yellowribbonbe.ai.enums.MissionResult;
 import laughcandidate.yellowribbonbe.ai.util.OpenAIUtil;
+import laughcandidate.yellowribbonbe.global.entity.Status;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
+import laughcandidate.yellowribbonbe.global.exception.errorCode.ImageErrorCode;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.MissionErrorCode;
+import laughcandidate.yellowribbonbe.image.dto.response.PresignedUrlResponse;
+import laughcandidate.yellowribbonbe.image.entity.Image;
+import laughcandidate.yellowribbonbe.image.repository.ImageRepository;
+import laughcandidate.yellowribbonbe.image.service.ImageService;
 import laughcandidate.yellowribbonbe.mission.dto.response.MissionListResponse;
 import laughcandidate.yellowribbonbe.mission.dto.response.MissionInfoDto;
 import laughcandidate.yellowribbonbe.mission.dto.response.MissionValidationResponse;
 import laughcandidate.yellowribbonbe.mission.entity.Mission;
+import laughcandidate.yellowribbonbe.mission.entity.MissionSubmit;
 import laughcandidate.yellowribbonbe.mission.repository.MissionRepository;
+import laughcandidate.yellowribbonbe.mission.repository.MissionSubmitRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,15 +30,32 @@ import lombok.RequiredArgsConstructor;
 public class MissionService {
 
 	private final OpenAIUtil openAIUtil;
+	private final ImageService imageService;
+	private final ImageRepository imageRepository;
 	private final MissionRepository missionRepository;
+	private final MissionSubmitRepository missionSubmitRepository;
 
-	public MissionValidationResponse validateMission(Long missionId, MultipartFile image) {
-		Mission mission = missionRepository.findById(missionId)
-			.orElseThrow(() -> new CustomException(MissionErrorCode.MISSION_NOT_FOUND));
+	@Transactional
+	public MissionValidationResponse validateMission(Long imageId) {
+		Image image = imageRepository.findById(imageId)
+			.orElseThrow(() -> new CustomException(ImageErrorCode.IMAGE_NOT_FOUND));
+
+		PresignedUrlResponse presignedGetUrl = imageService.createPresignedGetUrl(imageId);
+
+		MissionSubmit missionSubmit = image.getMissionSubmit();
+		Mission mission = missionSubmit.getMission();
 
 		String prompt = getPrompt(mission);
 
-		MissionResult missionResult = openAIUtil.sendPrompt(prompt, image);
+		MissionResult missionResult = openAIUtil.sendPrompt(prompt, presignedGetUrl.presignedUrl(), image.getType());
+
+		if (missionResult == MissionResult.APPROVED) {
+			missionSubmit.updateStatus(Status.COMPLETE);
+			image.updateIsSuccess(true);
+		} else {
+			missionSubmit.updateStatus(Status.REJECTED);
+			image.updateIsSuccess(false);
+		}
 
 		return new MissionValidationResponse(missionResult);
 	}
