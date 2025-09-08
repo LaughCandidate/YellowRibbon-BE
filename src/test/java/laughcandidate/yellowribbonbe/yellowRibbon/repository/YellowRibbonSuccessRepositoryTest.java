@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.context.annotation.Import;
+import laughcandidate.yellowribbonbe.global.config.QueryDslConfig;
 
 import java.lang.reflect.Constructor;
 import java.time.LocalDate;
@@ -28,6 +30,7 @@ import static org.assertj.core.api.Assertions.*;
 @ActiveProfiles("test")
 @DataJpaTest
 @EnableJpaAuditing
+@Import(QueryDslConfig.class)
 class YellowRibbonSuccessRepositoryTest {
 
     @Autowired
