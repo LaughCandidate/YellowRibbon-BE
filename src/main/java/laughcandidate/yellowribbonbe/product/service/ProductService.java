@@ -56,19 +56,19 @@ public class ProductService {
             LoanProduct loan = (LoanProduct) product;
             // 대출: 기준금리 ~ 기준금리+2.31%
             BigDecimal maxRate = loan.getInterestRate().add(new BigDecimal("2.31"));
-            builder.interestRate(String.format("%.2f ~ %.2f", loan.getInterestRate(), maxRate))
+            builder.interestRate(String.format("%.2f%% ~ %.2f%%", loan.getInterestRate(), maxRate))
                    .loanLimit("최대 " + (loan.getLoanLimit().longValue() / 100000000) + "억");
         } else if (product instanceof DepositProduct) {
             DepositProduct deposit = (DepositProduct) product;
             // 예금: 기준금리 ~ 기준금리+1.20%
             BigDecimal maxRate = deposit.getInterestRate().add(new BigDecimal("1.20"));
-            builder.interestRate(String.format("%.2f ~ %.2f", deposit.getInterestRate(), maxRate))
+            builder.interestRate(String.format("%.2f%% ~ %.2f%%", deposit.getInterestRate(), maxRate))
                    .displayPeriod("12개월 기준");
         } else if (product instanceof InstallmentSavingProduct) {
             InstallmentSavingProduct saving = (InstallmentSavingProduct) product;
             // 적금: 기준금리 ~ 기준금리+3.00%
             BigDecimal maxRate = saving.getInterestRate().add(new BigDecimal("3.00"));
-            builder.interestRate(String.format("%.2f ~ %.2f", saving.getInterestRate(), maxRate))
+            builder.interestRate(String.format("%.2f%% ~ %.2f%%", saving.getInterestRate(), maxRate))
                    .displayPeriod("12개월 기준");
         } else if (product instanceof InsuranceProduct) {
             InsuranceProduct insurance = (InsuranceProduct) product;
