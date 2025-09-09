@@ -5,8 +5,10 @@ import laughcandidate.yellowribbonbe.global.exception.errorCode.ProductErrorCode
 import laughcandidate.yellowribbonbe.product.constants.ProductConstants;
 import laughcandidate.yellowribbonbe.product.dto.ProductDetailResponse;
 import laughcandidate.yellowribbonbe.product.dto.ProductListResponse;
+import laughcandidate.yellowribbonbe.product.dto.UserBenefitProductResponse;
 import laughcandidate.yellowribbonbe.product.entity.*;
 import laughcandidate.yellowribbonbe.product.repository.ProductRepository;
+import laughcandidate.yellowribbonbe.product.repository.UserBenefitProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final UserBenefitProductRepository userBenefitProductRepository;
 
     public List<ProductListResponse> getProducts(String category, Long badgeId) {
         ProductCategory productCategory = parseCategory(category);
@@ -111,5 +114,15 @@ public class ProductService {
         }
 
         return builder.build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserBenefitProductResponse> getMyBenefitProducts(Long userId) {
+        List<UserBenefitProduct> userBenefitProducts = 
+                userBenefitProductRepository.findActiveUserBenefitProductsByUserId(userId);
+        
+        return userBenefitProducts.stream()
+                .map(UserBenefitProductResponse::from)
+                .toList();
     }
 }
