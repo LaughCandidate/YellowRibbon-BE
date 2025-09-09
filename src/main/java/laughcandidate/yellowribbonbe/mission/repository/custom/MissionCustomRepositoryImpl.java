@@ -35,7 +35,15 @@ public class MissionCustomRepositoryImpl implements MissionCustomRepository {
                 .from(mission)
                 .join(mission.badge, badge)
                 .leftJoin(missionSubmit).on(missionSubmit.mission.id.eq(mission.id)
-                        .and(missionSubmit.business.id.eq(businessId)))
+                        .and(missionSubmit.business.id.eq(businessId))
+                        .and(missionSubmit.id.in(
+                                queryFactory
+                                        .select(missionSubmit.id.max())
+                                        .from(missionSubmit)
+                                        .where(missionSubmit.mission.id.eq(mission.id)
+                                                .and(missionSubmit.business.id.eq(businessId)))
+                                        .groupBy(missionSubmit.mission.id)
+                        )))
                 .where(badge.id.eq(badgeId))
                 .fetch();
     }
