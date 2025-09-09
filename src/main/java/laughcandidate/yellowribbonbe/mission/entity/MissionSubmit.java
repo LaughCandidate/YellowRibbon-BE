@@ -43,17 +43,12 @@ public class MissionSubmit extends BaseEntity {
 	private Mission mission;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "image_id", nullable = false)
-	private Image image;
-
-	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "business_id", nullable = false)
 	private Business business;
 
 	@Builder
-	public MissionSubmit(Business business, Image image, Mission mission, String reason, Status status) {
+	public MissionSubmit(Business business, Mission mission, String reason, Status status) {
 		this.business = business;
-		this.image = image;
 		this.mission = mission;
 		this.reason = reason;
 		this.status = status;
