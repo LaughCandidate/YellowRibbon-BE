@@ -6,6 +6,7 @@ import laughcandidate.yellowribbonbe.global.entity.Status;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 public record BadgeApplyListItemResponse(
@@ -16,9 +17,10 @@ public record BadgeApplyListItemResponse(
         String businessName,
         String businessNo,
         Category badgeCategory,
-        LocalDateTime appliedAt
+        LocalDateTime appliedAt,
+        List<MissionSubmitResponse> missionSubmits
 ) {
-    public static BadgeApplyListItemResponse from(BadgeApply badgeApply) {
+    public static BadgeApplyListItemResponse from(BadgeApply badgeApply, List<MissionSubmitResponse> missionSubmits) {
         return BadgeApplyListItemResponse.builder()
                 .badgeApplyId(badgeApply.getId())
                 .status(badgeApply.getStatus())
@@ -28,6 +30,11 @@ public record BadgeApplyListItemResponse(
                 .businessNo(badgeApply.getBusiness().getBusinessNo())
                 .badgeCategory(badgeApply.getBadge().getCategory())
                 .appliedAt(badgeApply.getCreatedAt())
+                .missionSubmits(missionSubmits)
                 .build();
+    }
+
+    public static BadgeApplyListItemResponse from(BadgeApply badgeApply) {
+        return from(badgeApply, List.of());
     }
 }
