@@ -2,9 +2,12 @@ package laughcandidate.yellowribbonbe.badge.entity;
 
 import jakarta.persistence.*;
 import laughcandidate.yellowribbonbe.global.entity.BaseEntity;
+import laughcandidate.yellowribbonbe.mission.entity.Mission;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @Table(name = "BADGE")
@@ -20,5 +23,8 @@ public class Badge extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "category")
     private Category category;
+
+    @OneToMany(mappedBy = "badge", fetch = FetchType.LAZY)
+    private List<Mission> missions;
 
 }
