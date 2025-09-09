@@ -57,4 +57,8 @@ public class MissionSubmit extends BaseEntity {
 	public void updateStatus(Status status) {
 		this.status = status;
 	}
+	
+	public void updateReason(String reason) {
+		this.reason = reason;
+	}
 }
