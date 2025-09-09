@@ -17,9 +17,6 @@ public class YellowRibbon extends BaseEntity {
     @Column(name = "yellow_ribbon_id")
     private Long id;
 
-    @Column(name = "benefit")
-    private String benefit;
-
     @Column(name = "season")
     private Integer season;
 
