@@ -18,11 +18,14 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Product> findFilteredProducts(ProductCategory category) {
+    public List<Product> findFilteredProducts(ProductCategory category, Long badgeId) {
         return queryFactory
                 .selectFrom(product)
                 .leftJoin(product.badge).fetchJoin()
-                .where(typeEquals(category))
+                .where(
+                    typeEquals(category),
+                    badgeEquals(badgeId)
+                )
                 .fetch();
     }
 
@@ -37,5 +40,9 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             case SAVINGS -> product.instanceOf(laughcandidate.yellowribbonbe.product.entity.InstallmentSavingProduct.class);
             case INSURANCE -> product.instanceOf(laughcandidate.yellowribbonbe.product.entity.InsuranceProduct.class);
         };
+    }
+
+    private BooleanExpression badgeEquals(Long badgeId) {
+        return badgeId != null ? product.badge.id.eq(badgeId) : null;
     }
 }
