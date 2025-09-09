@@ -2,10 +2,12 @@ package laughcandidate.yellowribbonbe.product.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
 import laughcandidate.yellowribbonbe.product.dto.ProductListResponse;
 import laughcandidate.yellowribbonbe.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,18 +23,11 @@ public class ProductController {
 
     @GetMapping
     @Operation(
-        summary = "혜택 금융상품 리스트 조회 API",
-        description = "금융상품 리스트를 조회합니다.\n" +
-                "            \n" +
-                "            **카테고리별 조회 가능:**\n" +
-                "            - `LOAN`: 대출 상품\n" +
-                "            - `DEPOSIT`: 예금 상품  \n" +
-                "            - `SAVINGS`: 적금 상품\n" +
-                "            - `INSURANCE`: 보험 상품\n" +
-                "            \n" +
-                "            **카테고리 파라미터가 없으면 전체 상품을 조회합니다.**")
+        summary = "금융상품 리스트 조회 API",
+        description = "혜택 금융상품 리스트를 조회합니다.")
     public ResponseEntity<List<ProductListResponse>> getProducts(
-            @RequestParam(required = false) String category) {
+            @RequestParam(required = false) String category,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         
         List<ProductListResponse> products = productService.getProducts(category);
         return ResponseEntity.ok(products);
