@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import laughcandidate.yellowribbonbe.mission.entity.MissionSubmit;
 
-public interface MissionSubmitRepository extends JpaRepository<MissionSubmit, Long> {
+public interface MissionSubmitRepository extends JpaRepository<MissionSubmit, Long>, MissionSubmitRepositoryCustom {
 }
