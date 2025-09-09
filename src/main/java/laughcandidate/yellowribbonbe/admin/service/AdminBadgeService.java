@@ -6,16 +6,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import laughcandidate.yellowribbonbe.admin.dto.response.BadgeApplyListResponse;
+import laughcandidate.yellowribbonbe.admin.dto.response.BadgeApplyListItemResponse;
+import laughcandidate.yellowribbonbe.admin.dto.response.MissionSubmitResponse;
 import laughcandidate.yellowribbonbe.badge.entity.BadgeApply;
 import laughcandidate.yellowribbonbe.global.entity.Status;
 import laughcandidate.yellowribbonbe.badge.repository.BadgeApplyRepository;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.AdminErrorCode;
+import laughcandidate.yellowribbonbe.mission.entity.MissionSubmit;
+import laughcandidate.yellowribbonbe.mission.repository.MissionSubmitRepository;
 import laughcandidate.yellowribbonbe.yellowRibbon.entity.YellowRibbon;
 import laughcandidate.yellowribbonbe.yellowRibbon.entity.YellowRibbonSuccess;
 import laughcandidate.yellowribbonbe.yellowRibbon.repository.YellowRibbonRepository;
 import laughcandidate.yellowribbonbe.yellowRibbon.repository.YellowRibbonSuccessRepository;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +30,7 @@ public class AdminBadgeService {
 	private final BadgeApplyRepository badgeApplyRepository;
 	private final YellowRibbonRepository yellowRibbonRepository;
 	private final YellowRibbonSuccessRepository yellowRibbonSuccessRepository;
+	private final MissionSubmitRepository missionSubmitRepository;
 	
 	private static final int REQUIRED_BADGES_FOR_RIBBON = 5;
 
@@ -51,6 +58,23 @@ public class AdminBadgeService {
 	public BadgeApply getBadgeApplyDetail(Long badgeApplyId) {
 		return badgeApplyRepository.findByIdWithAllDetails(badgeApplyId)
 			.orElseThrow(() -> new CustomException(AdminErrorCode.BADGE_APPLY_NOT_FOUND));
+	}
+
+	@Transactional(readOnly = true)
+	public BadgeApplyListItemResponse getBadgeApplyDetailWithMissions(Long badgeApplyId) {
+		BadgeApply badgeApply = badgeApplyRepository.findByIdWithAllDetails(badgeApplyId)
+			.orElseThrow(() -> new CustomException(AdminErrorCode.BADGE_APPLY_NOT_FOUND));
+		
+		// 해당 Business의 MissionSubmit 정보 조회
+		List<MissionSubmit> missionSubmits = missionSubmitRepository.findByBusinessIdWithDetails(
+			badgeApply.getBusiness().getId()
+		);
+		
+		List<MissionSubmitResponse> missionSubmitResponses = missionSubmits.stream()
+			.map(MissionSubmitResponse::from)
+			.toList();
+		
+		return BadgeApplyListItemResponse.from(badgeApply, missionSubmitResponses);
 	}
 
 	@Transactional
