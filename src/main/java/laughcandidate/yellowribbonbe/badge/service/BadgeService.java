@@ -64,11 +64,18 @@ public class BadgeService {
                 }
             }
             
+            Status badgeStatus = null;
+            BadgeApply badgeApply = badgeApplyRepository.findByBusinessIdAndBadgeId(businessId, badge.getId()).orElse(null);
+            if (badgeApply != null) {
+                badgeStatus = badgeApply.getStatus();
+            }
+            
             BadgeInfoResponse response = new BadgeInfoResponse(
                     badge.getId(),
-                    badge.getCategory().name(),
+                    badge.getCategory(),
                     totalMissionCount,
-                    successMissionCount
+                    successMissionCount,
+                    badgeStatus
             );
             badgeInfoResponses.add(response);
             
