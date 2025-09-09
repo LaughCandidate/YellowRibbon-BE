@@ -8,7 +8,7 @@ import java.util.List;
 
 @Builder
 public record BadgeApplyListResponse(
-        List<BadgeApplyListItemResponse> badgeApplies,
+        List<BadgeApplyListItemBasicResponse> badgeApplies,
         int currentPage,
         int totalPages,
         long totalElements,
@@ -17,9 +17,9 @@ public record BadgeApplyListResponse(
         boolean hasPrevious
 ) {
     public static BadgeApplyListResponse from(Page<BadgeApply> page) {
-        List<BadgeApplyListItemResponse> badgeApplies = page.getContent()
+        List<BadgeApplyListItemBasicResponse> badgeApplies = page.getContent()
                 .stream()
-                .map(BadgeApplyListItemResponse::from)
+                .map(BadgeApplyListItemBasicResponse::from)
                 .toList();
 
         return BadgeApplyListResponse.builder()

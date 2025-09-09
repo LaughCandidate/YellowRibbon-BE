@@ -15,6 +15,8 @@ import laughcandidate.yellowribbonbe.global.exception.CustomException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.AdminErrorCode;
 import laughcandidate.yellowribbonbe.mission.entity.MissionSubmit;
 import laughcandidate.yellowribbonbe.mission.repository.MissionSubmitRepository;
+import laughcandidate.yellowribbonbe.image.entity.Image;
+import laughcandidate.yellowribbonbe.image.repository.ImageRepository;
 import laughcandidate.yellowribbonbe.yellowRibbon.entity.YellowRibbon;
 import laughcandidate.yellowribbonbe.yellowRibbon.entity.YellowRibbonSuccess;
 import laughcandidate.yellowribbonbe.yellowRibbon.repository.YellowRibbonRepository;
@@ -31,6 +33,7 @@ public class AdminBadgeService {
 	private final YellowRibbonRepository yellowRibbonRepository;
 	private final YellowRibbonSuccessRepository yellowRibbonSuccessRepository;
 	private final MissionSubmitRepository missionSubmitRepository;
+	private final ImageRepository imageRepository;
 	
 	private static final int REQUIRED_BADGES_FOR_RIBBON = 5;
 
@@ -71,7 +74,14 @@ public class AdminBadgeService {
 		);
 		
 		List<MissionSubmitResponse> missionSubmitResponses = missionSubmits.stream()
-			.map(MissionSubmitResponse::from)
+			.map(missionSubmit -> {
+				// MissionSubmit에 연관된 Image 찾기
+				Image image = imageRepository.findByMissionSubmit(missionSubmit).orElse(null);
+				Long imageId = image != null ? image.getId() : null;
+				String imageUuid = image != null ? image.getUuid() : null;
+				
+				return MissionSubmitResponse.from(missionSubmit, imageId, imageUuid);
+			})
 			.toList();
 		
 		return BadgeApplyListItemResponse.from(badgeApply, missionSubmitResponses);
