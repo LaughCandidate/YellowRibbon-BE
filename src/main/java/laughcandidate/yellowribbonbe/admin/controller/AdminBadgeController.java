@@ -46,13 +46,12 @@ public class AdminBadgeController {
 	@GetMapping("/{badgeApplyId}")
 	@Operation(
 		summary = "배지 신청 상세 조회 API",
-		description = "특정 배지 신청의 상세 정보를 조회합니다.")
+		description = "특정 배지 신청의 상세 정보와 연관된 미션 제출 내역을 조회합니다.")
 	public ResponseEntity<ApiResponse<BadgeApplyListItemResponse>> getBadgeApplyDetail(
 		@Parameter(description = "배지 신청 ID")
 		@PathVariable Long badgeApplyId
 	) {
-		BadgeApply badgeApply = adminBadgeService.getBadgeApplyDetail(badgeApplyId);
-		BadgeApplyListItemResponse response = BadgeApplyListItemResponse.from(badgeApply);
+		BadgeApplyListItemResponse response = adminBadgeService.getBadgeApplyDetailWithMissions(badgeApplyId);
 		return ResponseEntity.ok(ApiResponse.ok(response));
 	}
 
