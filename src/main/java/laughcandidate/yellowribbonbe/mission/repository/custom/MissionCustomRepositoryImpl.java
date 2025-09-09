@@ -1,8 +1,12 @@
 package laughcandidate.yellowribbonbe.mission.repository.custom;
 
+import static laughcandidate.yellowribbonbe.mission.entity.QMission.*;
+import static laughcandidate.yellowribbonbe.mission.entity.QMissionSubmit.*;
+
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import laughcandidate.yellowribbonbe.mission.dto.response.MissionInfoDto;
+import laughcandidate.yellowribbonbe.mission.entity.MissionSubmit;
 import laughcandidate.yellowribbonbe.mission.entity.QMission;
 import laughcandidate.yellowribbonbe.mission.entity.QMissionSubmit;
 import laughcandidate.yellowribbonbe.badge.entity.QBadge;
@@ -46,5 +50,15 @@ public class MissionCustomRepositoryImpl implements MissionCustomRepository {
                         )))
                 .where(badge.id.eq(badgeId))
                 .fetch();
+    }
+
+    @Override
+    public List<MissionSubmit> findByBusinessIdWithDetails(Long businessId) {
+        return queryFactory
+            .selectFrom(missionSubmit)
+            .join(missionSubmit.mission, mission).fetchJoin()
+            .where(missionSubmit.business.id.eq(businessId))
+            .orderBy(missionSubmit.createdAt.desc())
+            .fetch();
     }
 }
