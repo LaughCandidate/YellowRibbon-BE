@@ -22,9 +22,9 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public List<ProductListResponse> getProducts(String category) {
+    public List<ProductListResponse> getProducts(String category, Long badgeId) {
         ProductCategory productCategory = parseCategory(category);
-        List<Product> products = productRepository.findFilteredProducts(productCategory);
+        List<Product> products = productRepository.findFilteredProducts(productCategory, badgeId);
         
         return products.stream()
                 .map(this::convertToResponse)

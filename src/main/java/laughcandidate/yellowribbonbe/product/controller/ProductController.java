@@ -29,9 +29,10 @@ public class ProductController {
         description = "혜택 금융상품 리스트를 조회합니다.")
     public ResponseEntity<ApiResponse<List<ProductListResponse>>> getProducts(
             @RequestParam(required = false) String category,
+            @RequestParam(required = false) Long badgeId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         
-        List<ProductListResponse> products = productService.getProducts(category);
+        List<ProductListResponse> products = productService.getProducts(category, badgeId);
         return ResponseEntity.ok(ApiResponse.ok(products));
     }
 
