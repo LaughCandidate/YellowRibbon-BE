@@ -9,7 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import laughcandidate.yellowribbonbe.global.entity.BaseEntity;
 import laughcandidate.yellowribbonbe.mission.entity.MissionSubmit;
@@ -45,7 +45,7 @@ public class Image extends BaseEntity {
 	@Column(name = "is_success")
 	private Boolean isSuccess;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mission_submit_id", nullable = false)
 	private MissionSubmit missionSubmit;
 
