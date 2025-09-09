@@ -64,10 +64,10 @@ public class BadgeService {
                 }
             }
             
-            Status badgeStatus = null;
+            String badgeStatus = "DISAPPROVED";
             BadgeApply badgeApply = badgeApplyRepository.findByBusinessIdAndBadgeId(businessId, badge.getId()).orElse(null);
             if (badgeApply != null) {
-                badgeStatus = badgeApply.getStatus();
+                badgeStatus = badgeApply.getStatus() == Status.COMPLETE ? "APPROVED" : "DISAPPROVED";
             }
             
             BadgeInfoResponse response = new BadgeInfoResponse(
