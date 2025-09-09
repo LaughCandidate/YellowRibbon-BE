@@ -15,8 +15,6 @@ import laughcandidate.yellowribbonbe.global.entity.Status;
 import laughcandidate.yellowribbonbe.badge.repository.BadgeApplyRepository;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.AdminErrorCode;
-import laughcandidate.yellowribbonbe.image.entity.Image;
-import laughcandidate.yellowribbonbe.image.repository.ImageRepository;
 import laughcandidate.yellowribbonbe.image.service.ImageService;
 import laughcandidate.yellowribbonbe.yellowRibbon.entity.YellowRibbon;
 import laughcandidate.yellowribbonbe.yellowRibbon.entity.YellowRibbonSuccess;
@@ -34,7 +32,6 @@ public class AdminBadgeService {
 	private final YellowRibbonRepository yellowRibbonRepository;
 	private final YellowRibbonSuccessRepository yellowRibbonSuccessRepository;
 	private final MissionService missionService;
-	private final ImageRepository imageRepository;
 	private final ImageService imageService;
 	
 	private static final int REQUIRED_BADGES_FOR_RIBBON = 5;
@@ -78,20 +75,13 @@ public class AdminBadgeService {
 		List<MissionSubmitResponse> missionSubmitResponses = missionListResponse.missions().stream()
 			.filter(mission -> mission.tried() && mission.missionSubmitId() != null)
 			.map(mission -> {
-				Image image = null;
-				String imageUuid = null;
 				String imageUrl = null;
 				
 				if (mission.imageId() != null) {
-					image = imageRepository.findById(mission.imageId()).orElse(null);
-					imageUuid = image != null ? image.getUuid() : null;
-					
-					if (image != null) {
-						try {
-							imageUrl = imageService.createPresignedGetUrl(mission.imageId()).presignedUrl();
-						} catch (Exception e) {
-							imageUrl = null;
-						}
+					try {
+						imageUrl = imageService.createPresignedGetUrl(mission.imageId()).presignedUrl();
+					} catch (Exception e) {
+						imageUrl = null;
 					}
 				}
 				
@@ -101,8 +91,6 @@ public class AdminBadgeService {
 					.reason(mission.reason())
 					.missionCategory(mission.category().name())
 					.missionDescription(mission.description())
-					.imageId(mission.imageId())
-					.imageUuid(imageUuid)
 					.imageUrl(imageUrl)
 					.submittedAt(mission.submittedAt())
 					.build();
