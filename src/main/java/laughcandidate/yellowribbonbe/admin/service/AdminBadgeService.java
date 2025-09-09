@@ -8,13 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import laughcandidate.yellowribbonbe.admin.dto.response.BadgeApplyListResponse;
 import laughcandidate.yellowribbonbe.admin.dto.response.BadgeApplyListItemResponse;
 import laughcandidate.yellowribbonbe.admin.dto.response.MissionSubmitResponse;
+import laughcandidate.yellowribbonbe.mission.dto.response.MissionListResponse;
+import laughcandidate.yellowribbonbe.mission.service.MissionService;
 import laughcandidate.yellowribbonbe.badge.entity.BadgeApply;
 import laughcandidate.yellowribbonbe.global.entity.Status;
 import laughcandidate.yellowribbonbe.badge.repository.BadgeApplyRepository;
 import laughcandidate.yellowribbonbe.global.exception.CustomException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.AdminErrorCode;
-import laughcandidate.yellowribbonbe.mission.entity.MissionSubmit;
-import laughcandidate.yellowribbonbe.mission.repository.MissionSubmitRepository;
 import laughcandidate.yellowribbonbe.image.entity.Image;
 import laughcandidate.yellowribbonbe.image.repository.ImageRepository;
 import laughcandidate.yellowribbonbe.yellowRibbon.entity.YellowRibbon;
@@ -32,7 +32,7 @@ public class AdminBadgeService {
 	private final BadgeApplyRepository badgeApplyRepository;
 	private final YellowRibbonRepository yellowRibbonRepository;
 	private final YellowRibbonSuccessRepository yellowRibbonSuccessRepository;
-	private final MissionSubmitRepository missionSubmitRepository;
+	private final MissionService missionService;
 	private final ImageRepository imageRepository;
 	
 	private static final int REQUIRED_BADGES_FOR_RIBBON = 5;
@@ -68,19 +68,31 @@ public class AdminBadgeService {
 		BadgeApply badgeApply = badgeApplyRepository.findByIdWithAllDetails(badgeApplyId)
 			.orElseThrow(() -> new CustomException(AdminErrorCode.BADGE_APPLY_NOT_FOUND));
 		
-		// 해당 Business의 MissionSubmit 정보 조회
-		List<MissionSubmit> missionSubmits = missionSubmitRepository.findByBusinessIdWithDetails(
+		MissionListResponse missionListResponse = missionService.getMissionList(
+			badgeApply.getBadge().getId(),
 			badgeApply.getBusiness().getId()
 		);
 		
-		List<MissionSubmitResponse> missionSubmitResponses = missionSubmits.stream()
-			.map(missionSubmit -> {
-				// MissionSubmit에 연관된 Image 찾기
-				Image image = imageRepository.findByMissionSubmit(missionSubmit).orElse(null);
-				Long imageId = image != null ? image.getId() : null;
-				String imageUuid = image != null ? image.getUuid() : null;
+		List<MissionSubmitResponse> missionSubmitResponses = missionListResponse.missions().stream()
+			.filter(mission -> mission.tried() && mission.missionSubmitId() != null)
+			.map(mission -> {
+				Image image = null;
+				String imageUuid = null;
+				if (mission.imageId() != null) {
+					image = imageRepository.findById(mission.imageId()).orElse(null);
+					imageUuid = image != null ? image.getUuid() : null;
+				}
 				
-				return MissionSubmitResponse.from(missionSubmit, imageId, imageUuid);
+				return MissionSubmitResponse.builder()
+					.missionSubmitId(mission.missionSubmitId())
+					.status(mission.status())
+					.reason(mission.reason())
+					.missionCategory(mission.category().name())
+					.missionDescription(mission.description())
+					.imageId(mission.imageId())
+					.imageUuid(imageUuid)
+					.submittedAt(mission.submittedAt())
+					.build();
 			})
 			.toList();
 		

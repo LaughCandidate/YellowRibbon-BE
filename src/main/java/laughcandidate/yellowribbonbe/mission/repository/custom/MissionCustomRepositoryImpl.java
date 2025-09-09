@@ -10,6 +10,7 @@ import laughcandidate.yellowribbonbe.mission.entity.MissionSubmit;
 import laughcandidate.yellowribbonbe.mission.entity.QMission;
 import laughcandidate.yellowribbonbe.mission.entity.QMissionSubmit;
 import laughcandidate.yellowribbonbe.badge.entity.QBadge;
+import laughcandidate.yellowribbonbe.image.entity.QImage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -26,6 +27,7 @@ public class MissionCustomRepositoryImpl implements MissionCustomRepository {
         QMissionSubmit missionSubmit = QMissionSubmit.missionSubmit;
         QMission mission = QMission.mission;
         QBadge badge = QBadge.badge;
+        QImage image = QImage.image;
         
         return queryFactory
                 .select(Projections.constructor(MissionInfoDto.class,
@@ -34,7 +36,10 @@ public class MissionCustomRepositoryImpl implements MissionCustomRepository {
                         mission.description,
                         mission.id,
                         badge.category,
-                        missionSubmit.id.isNotNull()
+                        missionSubmit.id.isNotNull(),
+                        missionSubmit.id,
+                        image.id,
+                        missionSubmit.createdAt
                 ))
                 .from(mission)
                 .join(mission.badge, badge)
@@ -48,6 +53,7 @@ public class MissionCustomRepositoryImpl implements MissionCustomRepository {
                                                 .and(missionSubmit.business.id.eq(businessId)))
                                         .groupBy(missionSubmit.mission.id)
                         )))
+                .leftJoin(image).on(image.missionSubmit.id.eq(missionSubmit.id))
                 .where(badge.id.eq(badgeId))
                 .fetch();
     }
