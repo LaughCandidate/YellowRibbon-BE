@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import laughcandidate.yellowribbonbe.global.entity.Status;
 import laughcandidate.yellowribbonbe.badge.entity.Category;
 
+import java.time.LocalDateTime;
+
 @Schema(description = "미션 정보")
 public record MissionInfoDto(
     @Schema(description = "거절 사유")
@@ -22,5 +24,14 @@ public record MissionInfoDto(
     Category category,
 
     @Schema(description = "미션 시도 여부")
-    Boolean tried
+    Boolean tried,
+
+    @Schema(description = "미션 제출 ID")
+    Long missionSubmitId,
+
+    @Schema(description = "이미지 ID")
+    Long imageId,
+
+    @Schema(description = "제출 일시")
+    LocalDateTime submittedAt
 ) {}
