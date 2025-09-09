@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AdminErrorCode implements ErrorCode {
 
+    // 404
     BADGE_APPLY_NOT_FOUND(HttpStatus.NOT_FOUND, "A001", "배지 신청을 찾을 수 없습니다."),
     YELLOW_RIBBON_NOT_FOUND(HttpStatus.NOT_FOUND, "A002", "현재 발급 가능한 리본을 찾을 수 없습니다.");
 
