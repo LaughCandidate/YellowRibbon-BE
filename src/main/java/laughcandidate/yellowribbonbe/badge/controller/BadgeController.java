@@ -28,7 +28,7 @@ public class BadgeController {
     public ResponseEntity<ApiResponse<BadgeInfoListResponse>> getBadgesInfo(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        BadgeInfoListResponse badgesInfo = badgeService.getBadgesInfo(customUserDetails.getUserId(), customUserDetails.getBusinessId());
+        BadgeInfoListResponse badgesInfo = badgeService.getBadgesInfo(customUserDetails.getBusinessId());
 
         return ResponseEntity.ok(ApiResponse.ok(badgesInfo));
     }
