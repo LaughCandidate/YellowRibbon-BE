@@ -1,5 +1,7 @@
 package laughcandidate.yellowribbonbe.product.service;
 
+import laughcandidate.yellowribbonbe.global.exception.CustomException;
+import laughcandidate.yellowribbonbe.global.exception.errorCode.ProductErrorCode;
 import laughcandidate.yellowribbonbe.product.dto.ProductListResponse;
 import laughcandidate.yellowribbonbe.product.entity.*;
 import laughcandidate.yellowribbonbe.product.repository.ProductRepository;
@@ -35,7 +37,7 @@ public class ProductService {
         try {
             return ProductCategory.valueOf(category.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("잘못된 카테고리입니다: " + category);
+            throw new CustomException(ProductErrorCode.INVALID_PRODUCT_CATEGORY, category);
         }
     }
 
