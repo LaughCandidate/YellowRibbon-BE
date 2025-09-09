@@ -4,6 +4,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import laughcandidate.yellowribbonbe.yellowRibbon.entity.YellowRibbon;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Optional;
 
 import static laughcandidate.yellowribbonbe.yellowRibbon.entity.QYellowRibbon.yellowRibbon;
@@ -15,10 +17,11 @@ public class YellowRibbonRepositoryImpl implements YellowRibbonRepositoryCustom 
 
     @Override
     public Optional<YellowRibbon> findCurrentSeason() {
+        int year = LocalDate.now(ZoneId.of("Asia/Seoul")).getYear();
+
         YellowRibbon result = queryFactory
                 .selectFrom(yellowRibbon)
-                .orderBy(yellowRibbon.season.desc())
-                .limit(1)
+                .where(yellowRibbon.season.eq(year))
                 .fetchOne();
 
         return Optional.ofNullable(result);
