@@ -26,7 +26,9 @@ import laughcandidate.yellowribbonbe.user.entity.Role;
 import laughcandidate.yellowribbonbe.user.entity.User;
 import laughcandidate.yellowribbonbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BusinessService {
@@ -47,16 +49,21 @@ public class BusinessService {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(AuthErrorCode.USER_NOT_FOUND));
 
+		log.info("error1");
 		LocalDate parsedStartDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyyMMdd"));
 
+		log.info("error2");
 		Business business = saveBusiness(businessNo, businessName, ownerName, parsedStartDate, user);
 
+		log.info("error3");
 		if (user.getRole() == Role.ROLE_TEMP_USER) {
 			user.updateRole();
 		}
 
+		log.info("error4");
 		UserTokenResponse token = tokenProvider.createLoginToken(user.getUid(), userId, Role.ROLE_USER.getRole(), business.getId());
 
+		log.info("error5");
 		return new ConnectResponse(token.accessToken(), token.refreshToken(), user.getRole(), business.getId());
 	}
 
