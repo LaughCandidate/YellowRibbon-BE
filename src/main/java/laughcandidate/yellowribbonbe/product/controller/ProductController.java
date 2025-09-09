@@ -15,7 +15,7 @@ import java.util.List;
 
 @Tag(name = "금융상품")
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
 
