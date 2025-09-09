@@ -1,5 +1,8 @@
 package laughcandidate.yellowribbonbe.product.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum ProductCategory {
     LOAN("대출"),
     DEPOSIT("예금"), 
@@ -10,9 +13,5 @@ public enum ProductCategory {
 
     ProductCategory(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }
