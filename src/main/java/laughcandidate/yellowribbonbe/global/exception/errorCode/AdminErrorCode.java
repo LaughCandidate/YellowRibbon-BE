@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 public enum AdminErrorCode implements ErrorCode {
 
     BADGE_APPLY_NOT_FOUND(HttpStatus.NOT_FOUND, "A001", "배지 신청을 찾을 수 없습니다."),
-    YELLOW_RIBBON_NOT_FOUND(HttpStatus.NOT_FOUND, "A002", "현재 발급 가능한 리본을 찾을 수 없습니다.");
+    YELLOW_RIBBON_NOT_FOUND(HttpStatus.NOT_FOUND, "A002", "현재 발급 가능한 리본을 찾을 수 없습니다."),
+    MISSION_SUBMIT_NOT_FOUND(HttpStatus.NOT_FOUND, "A003", "미션 제출을 찾을 수 없습니다."),
+    INVALID_STATUS_TRANSITION(HttpStatus.BAD_REQUEST, "A004", "유효하지 않은 상태 전환입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
