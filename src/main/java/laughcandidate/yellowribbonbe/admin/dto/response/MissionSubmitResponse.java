@@ -15,6 +15,7 @@ public record MissionSubmitResponse(
         String missionDescription,
         Long imageId,
         String imageUuid,
+        String imageUrl,
         LocalDateTime submittedAt
 ) {
     public static MissionSubmitResponse from(MissionSubmit missionSubmit, Long imageId, String imageUuid) {
