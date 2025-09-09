@@ -1,8 +1,8 @@
 package laughcandidate.yellowribbonbe.admin.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +24,7 @@ public class AdminMissionController {
 
     private final AdminMissionService adminMissionService;
 
-    @PutMapping("/{missionSubmitId}/status")
+    @PatchMapping("/{missionSubmitId}/status")
     @Operation(
         summary = "미션 상태 변경 API",
         description = "관리자가 미션 제출의 상태를 변경합니다. ")
