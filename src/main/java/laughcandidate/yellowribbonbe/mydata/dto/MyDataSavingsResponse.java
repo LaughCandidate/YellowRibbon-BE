@@ -1,5 +1,6 @@
 package laughcandidate.yellowribbonbe.mydata.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import laughcandidate.yellowribbonbe.mydata.entity.MyDataSavings;
 import laughcandidate.yellowribbonbe.product.entity.ProductCategory;
 
@@ -8,13 +9,21 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 
+@Schema(name = "MyDataSavingsResponse: 나의 보유 적금 응답 DTO")
 public record MyDataSavingsResponse(
+        @Schema(description = "적금 상품명", example = "KB사업자 세금적금")
         String productName,
+        @Schema(description = "상품 카테고리", example = "적금")
         String category,
+        @Schema(description = "적용 금리", example = "3.80%")
         String interestRate,
+        @Schema(description = "총 납입액", example = "1,200만원")
         String totalPaymentAmount,
+        @Schema(description = "납입 기간", example = "24개월")
         String paymentPeriodMonths,
+        @Schema(description = "월 납입액", example = "50만원")
         String monthlyPayment,
+        @Schema(description = "만기 예상 수령액", example = "1,280만원")
         String maturityAmount
 ) implements MyDataResponse {
 

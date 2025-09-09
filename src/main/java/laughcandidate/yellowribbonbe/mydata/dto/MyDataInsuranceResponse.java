@@ -1,16 +1,24 @@
 package laughcandidate.yellowribbonbe.mydata.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import laughcandidate.yellowribbonbe.mydata.entity.MyDataInsurance;
 import laughcandidate.yellowribbonbe.product.entity.ProductCategory;
 
 import java.math.BigDecimal;
 
+@Schema(name = "MyDataInsuranceResponse: 나의 보유 보험 응답 DTO")
 public record MyDataInsuranceResponse(
+        @Schema(description = "보험 상품명", example = "삼성화재 소상공인 종합보험")
         String productName,
+        @Schema(description = "상품 카테고리", example = "보험")
         String category,
+        @Schema(description = "월 보험료", example = "50,000원")
         String monthlyPremium,
+        @Schema(description = "보장 종류", example = "소상공인종합보험")
         String coverageType,
+        @Schema(description = "보험 기간", example = "1년")
         String coveragePeriod,
+        @Schema(description = "보장 금액", example = "30,000만원")
         String coverageAmount
 ) implements MyDataResponse {
 

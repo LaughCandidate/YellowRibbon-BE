@@ -1,5 +1,6 @@
 package laughcandidate.yellowribbonbe.mydata.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import laughcandidate.yellowribbonbe.mydata.entity.MyDataLoan;
 import laughcandidate.yellowribbonbe.product.entity.ProductCategory;
 
@@ -9,14 +10,23 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
+@Schema(name = "MyDataLoanResponse: 나의 보유 대출 응답 DTO")
 public record MyDataLoanResponse(
+        @Schema(description = "대출 상품명", example = "KB소상공인 운영자금대출")
         String productName,
+        @Schema(description = "상품 카테고리", example = "대출")
         String category,
+        @Schema(description = "적용 금리", example = "5.20%")
         String interestRate,
+        @Schema(description = "상환 방식", example = "원리금균등분할상환")
         String repayMethod,
+        @Schema(description = "총 대출금", example = "5,000만원")
         String totalLoanAmount,
+        @Schema(description = "월 상환액", example = "85만원")
         String monthlyRepayment,
+        @Schema(description = "대출 잔액", example = "3,500만원")
         String remainingBalance,
+        @Schema(description = "대출 기간", example = "2023.06.15 ~ 2028.06.15")
         String loanPeriod
 ) implements MyDataResponse {
 
