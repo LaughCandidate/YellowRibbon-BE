@@ -2,6 +2,7 @@ package laughcandidate.yellowribbonbe.yellowRibbon.repository;
 
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import laughcandidate.yellowribbonbe.yellowRibbon.entity.YellowRibbon;
 import laughcandidate.yellowribbonbe.yellowRibbon.entity.YellowRibbonSuccess;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
+import static laughcandidate.yellowribbonbe.yellowRibbon.entity.QYellowRibbon.yellowRibbon;
 import static laughcandidate.yellowribbonbe.yellowRibbon.entity.QYellowRibbonSuccess.yellowRibbonSuccess;
 import static laughcandidate.yellowribbonbe.business.entity.QBusiness.business;
 import static laughcandidate.yellowribbonbe.user.entity.QUser.user;
@@ -35,5 +37,17 @@ public class YellowRibbonSuccessRepositoryImpl implements YellowRibbonSuccessRep
                 .from(yellowRibbonSuccess);
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public List<YellowRibbon> findRibbonsByBusinessId(Long businessId) {
+        return queryFactory
+                .select(yellowRibbon)
+                .from(yellowRibbonSuccess)
+                .join(yellowRibbonSuccess.yellowRibbon, yellowRibbon)
+                .where(yellowRibbonSuccess.business.id.eq(businessId))
+                .distinct()
+                .orderBy(yellowRibbon.id.asc())
+                .fetch();
     }
 }
