@@ -6,6 +6,7 @@ import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
 import laughcandidate.yellowribbonbe.product.dto.ProductDetailResponse;
 import laughcandidate.yellowribbonbe.product.dto.ProductListResponse;
+import laughcandidate.yellowribbonbe.product.dto.UserBenefitProductResponse;
 import laughcandidate.yellowribbonbe.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +47,17 @@ public class ProductController {
         
         ProductDetailResponse productDetail = productService.getProductDetail(productId);
         return ResponseEntity.ok(ApiResponse.ok(productDetail));
+    }
+
+    @GetMapping("/my-benefits")
+    @Operation(
+        summary = "나의 보유 혜택 상품 조회 API",
+        description = "현재 로그인한 사용자가 보유한 혜택 상품 목록을 조회합니다.")
+    public ResponseEntity<ApiResponse<List<UserBenefitProductResponse>>> getMyBenefitProducts(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        
+        List<UserBenefitProductResponse> myBenefitProducts = 
+                productService.getMyBenefitProducts(customUserDetails.getUserId());
+        return ResponseEntity.ok(ApiResponse.ok(myBenefitProducts));
     }
 }
