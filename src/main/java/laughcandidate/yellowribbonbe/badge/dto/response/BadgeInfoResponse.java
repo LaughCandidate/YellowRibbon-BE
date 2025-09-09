@@ -1,10 +1,14 @@
 package laughcandidate.yellowribbonbe.badge.dto.response;
 
+import laughcandidate.yellowribbonbe.badge.entity.Category;
+import laughcandidate.yellowribbonbe.global.entity.Status;
+
 public record BadgeInfoResponse(
         Long badgeId,
-        String category,
+        Category category,
         Long totalMissionCount,
-        Long successMissionCount
+        Long successMissionCount,
+        Status status
 ) {
 
 }
