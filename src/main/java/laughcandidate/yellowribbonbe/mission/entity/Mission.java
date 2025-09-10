@@ -27,7 +27,7 @@ public class Mission extends BaseEntity {
 	private Long id;
 
 	@Column(name = "season")
-	private String season;
+	private Integer season;
 
 	@Column(name = "description")
 	private String description;
