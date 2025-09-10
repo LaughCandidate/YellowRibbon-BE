@@ -4,8 +4,10 @@ import laughcandidate.yellowribbonbe.mydata.entity.MyData;
 import laughcandidate.yellowribbonbe.product.entity.ProductCategory;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MyDataRepositoryCustom {
     List<MyData> findByUserIdAndCategory(Long userId, ProductCategory category);
     List<MyData> findByUserId(Long userId);
+    Optional<MyData> findByIdAndUserId(Long id, Long userId);
 }
