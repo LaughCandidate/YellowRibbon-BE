@@ -32,6 +32,9 @@ public class Mission extends BaseEntity {
 	@Column(name = "description")
 	private String description;
 
+	@Column(name = "success_description")
+	private String successDescription;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "badge_id", nullable = false)
 	private Badge badge;
