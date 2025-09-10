@@ -75,7 +75,6 @@ public class MissionService {
 		StringBuilder prompt = new StringBuilder();
 		prompt.append("다음 미션을 수행했는지 이미지를 보고 판단해주세요.\n");
 		prompt.append("미션: ").append(mission.getDescription()).append("\n");
-		prompt.append("카테고리: ").append(mission.getCategory()).append("\n");
 		prompt.append("‘승인’ 또는 ‘거절’만으로 답변해주세요.");
 
 		return prompt.toString();
