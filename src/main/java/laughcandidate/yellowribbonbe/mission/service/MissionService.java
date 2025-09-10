@@ -1,11 +1,5 @@
 package laughcandidate.yellowribbonbe.mission.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import laughcandidate.yellowribbonbe.ai.enums.MissionResult;
 import laughcandidate.yellowribbonbe.ai.util.OpenAIUtil;
 import laughcandidate.yellowribbonbe.global.entity.Status;
@@ -16,14 +10,18 @@ import laughcandidate.yellowribbonbe.image.dto.response.PresignedUrlResponse;
 import laughcandidate.yellowribbonbe.image.entity.Image;
 import laughcandidate.yellowribbonbe.image.repository.ImageRepository;
 import laughcandidate.yellowribbonbe.image.service.ImageService;
-import laughcandidate.yellowribbonbe.mission.dto.response.MissionListResponse;
 import laughcandidate.yellowribbonbe.mission.dto.response.MissionInfoDto;
+import laughcandidate.yellowribbonbe.mission.dto.response.MissionListResponse;
 import laughcandidate.yellowribbonbe.mission.dto.response.MissionValidationResponse;
 import laughcandidate.yellowribbonbe.mission.entity.Mission;
 import laughcandidate.yellowribbonbe.mission.entity.MissionSubmit;
 import laughcandidate.yellowribbonbe.mission.repository.MissionRepository;
 import laughcandidate.yellowribbonbe.mission.repository.MissionSubmitRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
