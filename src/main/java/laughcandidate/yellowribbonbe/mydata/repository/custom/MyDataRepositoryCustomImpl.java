@@ -8,11 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static laughcandidate.yellowribbonbe.mydata.entity.QMyDataLoan.myDataLoan;
 import static laughcandidate.yellowribbonbe.mydata.entity.QMyDataDeposit.myDataDeposit;
 import static laughcandidate.yellowribbonbe.mydata.entity.QMyDataSavings.myDataSavings;
 import static laughcandidate.yellowribbonbe.mydata.entity.QMyDataInsurance.myDataInsurance;
+import static laughcandidate.yellowribbonbe.mydata.entity.QMyData.myData;
 
 @Repository
 @RequiredArgsConstructor
@@ -86,5 +88,15 @@ public class MyDataRepositoryCustomImpl implements MyDataRepositoryCustom {
         result.addAll(insurances);
         
         return result;
+    }
+
+    @Override
+    public Optional<MyData> findByIdAndUserId(Long id, Long userId) {
+        MyData result = queryFactory
+                .selectFrom(myData)
+                .where(myData.id.eq(id).and(myData.user.id.eq(userId)))
+                .fetchOne();
+        
+        return Optional.ofNullable(result);
     }
 }

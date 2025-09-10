@@ -4,9 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
-import laughcandidate.yellowribbonbe.product.dto.ProductDetailResponse;
-import laughcandidate.yellowribbonbe.product.dto.ProductListResponse;
-import laughcandidate.yellowribbonbe.product.dto.UserBenefitProductResponse;
+import laughcandidate.yellowribbonbe.product.dto.*;
+import jakarta.validation.Valid;
 import laughcandidate.yellowribbonbe.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,6 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-
 
     @GetMapping
     @Operation(
@@ -59,5 +57,19 @@ public class ProductController {
         List<UserBenefitProductResponse> myBenefitProducts = 
                 productService.getMyBenefitProducts(customUserDetails.getUserId());
         return ResponseEntity.ok(ApiResponse.ok(myBenefitProducts));
+    }
+
+    @PostMapping("/{productId}/compare")
+    @Operation(
+        summary = "금융상품 비교 API",
+        description = "혜택 금융상품과 사용자 보유 상품을 비교합니다.")
+    public ResponseEntity<ApiResponse<ComparisonResponse>> compareProducts(
+            @PathVariable Long productId,
+            @RequestBody @Valid CompareRequest request,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        
+        ComparisonResponse comparison = productService.compareProducts(
+                productId, request.getMyDataId(), customUserDetails.getUserId());
+        return ResponseEntity.ok(ApiResponse.ok(comparison));
     }
 }
