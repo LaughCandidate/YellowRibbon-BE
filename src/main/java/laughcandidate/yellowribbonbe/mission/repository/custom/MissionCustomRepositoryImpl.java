@@ -73,18 +73,19 @@ public class MissionCustomRepositoryImpl implements MissionCustomRepository {
 
     @Override
     public List<Mission> findCompletedMission(Long businessId, Integer targetSeason) {
-        QMission m2 = new QMission("m2");
-        
         return queryFactory
                 .selectFrom(mission)
                 .join(mission.badge, badge).fetchJoin()
                 .where(mission.season.eq(targetSeason)
                         .and(mission.id.in(
                                 queryFactory
-                                        .select(m2.id.max())
-                                        .from(m2)
-                                        .where(m2.season.eq(targetSeason))
-                                        .groupBy(m2.badge.id)
+                                        .select(missionSubmit.mission.id)
+                                        .from(missionSubmit)
+                                        .join(missionSubmit.mission, mission)
+                                        .where(missionSubmit.business.id.eq(businessId)
+                                                .and(missionSubmit.status.eq(Status.COMPLETE))
+                                                .and(mission.season.eq(targetSeason)))
+                                        .distinct()
                         )))
                 .orderBy(badge.id.asc())
                 .fetch();
