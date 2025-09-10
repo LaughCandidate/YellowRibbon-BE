@@ -6,12 +6,14 @@ import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
 import laughcandidate.yellowribbonbe.yellowRibbon.dto.response.RibbonSuccessListResponse;
 import laughcandidate.yellowribbonbe.yellowRibbon.dto.response.YellowRibbonBenefitListResponse;
+import laughcandidate.yellowribbonbe.yellowRibbon.dto.response.YellowRibbonQrPageListResponse;
 import laughcandidate.yellowribbonbe.yellowRibbon.service.YellowRibbonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "옐로리본")
@@ -38,6 +40,17 @@ public class YellowRibbonController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         RibbonSuccessListResponse data = yellowRibbonService.getRibbonSuccesses(customUserDetails.getBusinessId());
+        return ResponseEntity.ok(ApiResponse.ok(data));
+    }
+
+    @GetMapping("/qr-page")
+    @Operation(summary = "QR 페이지 조회 API", description = "해당 옐로 리본의 QR 페이지 조회")
+    public ResponseEntity<ApiResponse<YellowRibbonQrPageListResponse>> getQrPage(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam("yellow_ribbon_id") Long yellowRibbonId
+    ) {
+        YellowRibbonQrPageListResponse data =
+                yellowRibbonService.getQrPage(customUserDetails.getBusinessId(), yellowRibbonId);
         return ResponseEntity.ok(ApiResponse.ok(data));
     }
 }
