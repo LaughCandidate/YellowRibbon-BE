@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record MissionSubmitResponse(
+		Long missionId,
         Long missionSubmitId,
         Status status,
         String reason,
