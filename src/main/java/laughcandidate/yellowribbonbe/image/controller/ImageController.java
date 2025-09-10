@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
 import laughcandidate.yellowribbonbe.image.dto.request.GetPresignedUrlRequest;
@@ -18,6 +19,7 @@ import laughcandidate.yellowribbonbe.image.dto.response.PresignedUrlResponse;
 import laughcandidate.yellowribbonbe.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "이미지")
 @RestController
 @RequestMapping("/image")
 @RequiredArgsConstructor
