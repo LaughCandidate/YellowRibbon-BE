@@ -48,6 +48,10 @@ public class YellowRibbonService {
         List<YellowRibbon> ribbons =
                 yellowRibbonSuccessRepository.findRibbonsByBusinessId(businessId);
 
+        if (ribbons == null || ribbons.isEmpty()) {
+            throw new CustomException(YellowRibbonErrorCode.YELLOW_RIBBON_NOT_FOUND);
+        }
+
         return RibbonSuccessListResponse.from(ribbons);
     }
 
