@@ -86,6 +86,7 @@ public class AdminBadgeService {
 				}
 				
 				return MissionSubmitResponse.builder()
+					.missionId(mission.missionId())
 					.missionSubmitId(mission.missionSubmitId())
 					.status(mission.status())
 					.reason(mission.reason())
