@@ -4,7 +4,14 @@ import laughcandidate.yellowribbonbe.global.exception.CustomException;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.BusinessErrorCode;
 import laughcandidate.yellowribbonbe.global.exception.errorCode.YellowRibbonErrorCode;
 import laughcandidate.yellowribbonbe.mission.entity.Mission;
+import laughcandidate.yellowribbonbe.mission.entity.MissionSubmit;
 import laughcandidate.yellowribbonbe.mission.repository.MissionRepository;
+import laughcandidate.yellowribbonbe.mission.repository.MissionSubmitRepository;
+import laughcandidate.yellowribbonbe.image.service.ImageService;
+import laughcandidate.yellowribbonbe.image.repository.ImageRepository;
+import laughcandidate.yellowribbonbe.image.entity.Image;
+import laughcandidate.yellowribbonbe.global.entity.Status;
+import java.util.Optional;
 import laughcandidate.yellowribbonbe.yellowRibbon.dto.response.RibbonSuccessListResponse;
 import laughcandidate.yellowribbonbe.yellowRibbon.dto.response.YellowRibbonBenefitListResponse;
 import laughcandidate.yellowribbonbe.yellowRibbon.dto.response.YellowRibbonQrPageItemResponse;
@@ -25,6 +32,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class YellowRibbonService {
     private final MissionRepository missionRepository;
+    private final MissionSubmitRepository missionSubmitRepository;
+    private final ImageService imageService;
+    private final ImageRepository imageRepository;
     private final YellowRibbonRepository yellowRibbonRepository;
     private final YellowRibbonBenefitRepository yellowRibbonBenefitRepository;
     private final YellowRibbonSuccessRepository yellowRibbonSuccessRepository;
@@ -66,19 +76,33 @@ public class YellowRibbonService {
                 .map(YellowRibbon::getSeason)
                 .orElseThrow(() -> new CustomException(YellowRibbonErrorCode.YELLOW_RIBBON_NOT_FOUND));
 
-        List<Mission> missions = missionRepository
-                .findCompletedMission(businessId, season);
+        List<Mission> completedMissions = missionSubmitRepository.findCompletedMission(businessId, season);
 
         List<YellowRibbonQrPageItemResponse> items = new ArrayList<>();
-        for (Mission mission : missions) {
-            var badge = mission.getBadge();
-            items.add(new YellowRibbonQrPageItemResponse(
-                    badge.getId(),
-                    badge.getCategory().getCategory(),
+        for (Mission mission : completedMissions) {
+            MissionSubmit missionSubmit = missionSubmitRepository.findByBusinessIdWithDetails(businessId)
+                    .stream()
+                    .filter(ms -> ms.getMission().getId().equals(mission.getId()) && 
+                                 ms.getStatus().equals(Status.COMPLETE))
+                    .findFirst()
+                    .orElse(null);
+            
+            String imageUrl = null;
+            if (missionSubmit != null) {
+                Optional<Image> imageOpt = imageRepository.findByMissionSubmit(missionSubmit);
+                if (imageOpt.isPresent()) {
+                    imageUrl = imageService.createPresignedGetUrl(imageOpt.get().getId()).presignedUrl();
+                }
+            }
+            
+            YellowRibbonQrPageItemResponse item = new YellowRibbonQrPageItemResponse(
+                    mission.getBadge().getId(),
+                    mission.getBadge().getCategory().toString(),
                     mission.getDescription(),
                     mission.getSuccessDescription(),
-                    null
-            ));
+                    imageUrl
+            );
+            items.add(item);
         }
 
         return new YellowRibbonQrPageListResponse(items);
