@@ -5,9 +5,9 @@ import java.math.BigDecimal;
 public final class ProductConstants {
     
     // 금리 수치 조정
-    public static final BigDecimal LOAN_ADDITIONAL_RATE = new BigDecimal("2.31");
-    public static final BigDecimal DEPOSIT_ADDITIONAL_RATE = new BigDecimal("1.20");
-    public static final BigDecimal SAVINGS_ADDITIONAL_RATE = new BigDecimal("3.00");
+    public static final BigDecimal LOAN_ADDITIONAL_RATE = new BigDecimal("0.60");
+    public static final BigDecimal DEPOSIT_ADDITIONAL_RATE = new BigDecimal("0.50");
+    public static final BigDecimal SAVINGS_ADDITIONAL_RATE = new BigDecimal("0.50");
     
     // 단위 변환
     public static final long WON_TO_MILLION = 10000L;           // 만원 변환
