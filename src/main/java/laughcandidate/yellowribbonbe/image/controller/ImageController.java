@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,10 +46,10 @@ public class ImageController {
 		description = "조회용 presigned url을 조회합니다."
 	)
 	public ResponseEntity<ApiResponse<PresignedUrlResponse>> createGetPresignedUrl(
-		@RequestBody GetPresignedUrlRequest getPresignedUrlRequest,
+		@RequestParam Long imageId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-		PresignedUrlResponse result = imageService.createPresignedGetUrl(getPresignedUrlRequest.imageId());
+		PresignedUrlResponse result = imageService.createPresignedGetUrl(imageId);
 		return ResponseEntity.ok(ApiResponse.ok(result));
 	}
 
