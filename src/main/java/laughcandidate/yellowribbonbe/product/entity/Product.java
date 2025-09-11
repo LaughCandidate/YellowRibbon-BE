@@ -1,6 +1,7 @@
 package laughcandidate.yellowribbonbe.product.entity;
 
 import jakarta.persistence.*;
+import laughcandidate.yellowribbonbe.global.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import laughcandidate.yellowribbonbe.badge.entity.Badge;
 @DiscriminatorColumn(name = "category")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class Product {
+public abstract class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
