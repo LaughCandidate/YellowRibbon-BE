@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import laughcandidate.yellowribbonbe.auth.service.CustomUserDetails;
 import laughcandidate.yellowribbonbe.global.response.ApiResponse;
 import laughcandidate.yellowribbonbe.mission.dto.request.MissionValidationRequest;
+import laughcandidate.yellowribbonbe.mission.dto.response.MissionInfoDto;
 import laughcandidate.yellowribbonbe.mission.dto.response.MissionListResponse;
 import laughcandidate.yellowribbonbe.mission.dto.response.MissionValidationResponse;
 import laughcandidate.yellowribbonbe.mission.service.MissionService;
@@ -52,5 +53,18 @@ public class MissionController {
 
 		MissionListResponse missionList = missionService.getMissionList(badgeId, customUserDetails.getBusinessId());
 		return ResponseEntity.ok(ApiResponse.ok(missionList));
+	}
+
+	@GetMapping("/{missionId}")
+	@Operation(
+		summary = "미션 ID로 미션 정보 조회 API",
+		description = "미션 ID로 미션 정보를 조회합니다."
+	)
+	public ResponseEntity<ApiResponse<MissionInfoDto>> getMission(
+		@PathVariable Long missionId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		MissionInfoDto mission = missionService.getMission(missionId, customUserDetails.getBusinessId());
+		return ResponseEntity.ok(ApiResponse.ok(mission));
 	}
 }

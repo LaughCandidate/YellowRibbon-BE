@@ -14,5 +14,7 @@ public interface MissionCustomRepository {
 
     List<Mission> findCompletedMission(Long businessId, Integer season);
 
+    MissionInfoDto findMissionWithSubmitDataById(Long missionId, Long businessId);
+
 
 }

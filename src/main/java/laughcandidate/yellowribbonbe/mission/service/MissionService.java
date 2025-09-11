@@ -69,6 +69,17 @@ public class MissionService {
 		return new MissionListResponse(result);
 	}
 
+	@Transactional(readOnly = true)
+	public MissionInfoDto getMission(Long missionId, Long businessId) {
+		MissionInfoDto result = missionRepository.findMissionWithSubmitDataById(missionId, businessId);
+		
+		if (result == null) {
+			throw new CustomException(MissionErrorCode.MISSION_NOT_FOUND);
+		}
+
+		return result;
+	}
+
 	private String getPrompt(Mission mission) {
 		StringBuilder prompt = new StringBuilder();
 		prompt.append("다음 미션을 수행했는지 이미지를 보고 판단해주세요.\n");
