@@ -50,6 +50,10 @@ public class MissionService {
 		if (missionResult == MissionResult.APPROVED) {
 			missionSubmit.updateStatus(Status.COMPLETE);
 			image.updateIsSuccess(true);
+		} else if (missionResult == MissionResult.DECLINED) {
+			missionSubmit.updateStatus(Status.REJECTED);
+			image.updateIsSuccess(false);
+			throw new CustomException(MissionErrorCode.MISSION_VALIDATION_DECLINED);
 		} else {
 			missionSubmit.updateStatus(Status.REJECTED);
 			image.updateIsSuccess(false);

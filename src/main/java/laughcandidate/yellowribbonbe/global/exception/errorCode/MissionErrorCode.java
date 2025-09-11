@@ -15,6 +15,7 @@ public enum MissionErrorCode implements ErrorCode {
 	NOT_IMAGE_FILE(HttpStatus.BAD_REQUEST, "M-004", "JPEG, PNG, JPG 파일만 업로드 가능합니다."),
 	FILE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "M-006", "파일 크기는 10MB를 초과할 수 없습니다."),
 	MULTIPLE_FILES_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "M-007", "이미지는 1개만 업로드할 수 있습니다."),
+	MISSION_VALIDATION_DECLINED(HttpStatus.BAD_REQUEST, "M-008", "미션 검증이 거절되었습니다."),
 
 	// 404
 	MISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "M-001", "미션을 찾을 수 없습니다."),
